@@ -36,7 +36,12 @@ const SimpleSelect = ({options, value, onChange}: {options: string[]; value: str
   </Select.Root>
 );
 
-const SelectItem = React.forwardRef(({ children, className, ...props }, forwardedRef) => {
+interface SelectItemProps extends React.ComponentPropsWithoutRef<typeof Select.Item> {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(({ children, className, ...props }, forwardedRef) => {
   return (
     <Select.Item
       className={classnames(
