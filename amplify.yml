@@ -3,10 +3,14 @@ backend:
   phases:
     build:
       commands:
+        - npm install # Ensure package-lock.json is updated if needed
         - npm ci --cache .npm --prefer-offline
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
+    preBuild:
+      commands:
+        - npm install # Ensures dependencies are installed locally and package-lock.json is in sync
     build:
       commands:
         - npm run build
