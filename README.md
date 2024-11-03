@@ -1,12 +1,18 @@
 # amplify-next-chatbot
 
-* Uses Next.js App Router
+* Uses Next.js App Router v15
 * Uses React (in Typescript)
 * Uses Tailwind CSS
+* Uses REST API
 * Deployment to AWS App Runner
 
 ## Installation
-Install npm packages
+1. Install node
+```
+brew install node
+```
+
+2. Install npm packages
 ```
 npm install
 ```
