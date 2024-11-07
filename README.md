@@ -17,6 +17,15 @@ brew install node
 npm install
 ```
 
+3. Get `amplify_outputs.json` from https://docs.amplify.aws/react/reference/amplify_outputs/. Put in base directory.
+
+4. Go to https://aws.amazon.com, AWS Amplify, select the app, go to Hosting -> Environment variables -> add new:
+```
+Variable: NEXT_PUBLIC_API_BASE_URL
+Value: https://dev.example.com
+```
+Note that `Value` is your main django backend custom domain, not your aws amplify custom domain.
+
 ## Local Development
 
 ```
