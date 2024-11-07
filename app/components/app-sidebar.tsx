@@ -9,10 +9,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/app/components/shadcn/ui/sidebar"
- 
-// Menu items
-const items = [
+} from "@/app/components/shadcn/ui/sidebar";
+
+import { LucideIcon } from "lucide-react";
+
+interface MenuItem {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+}
+
+// Default items (your original structure)
+const defaultItems = [
   {
     title: "Home",
     url: "/",
@@ -20,24 +28,24 @@ const items = [
   },
   {
     title: "Settings",
-    url: "/settings",
+    url: "/settings/profile",
     icon: Settings,
   },
-]
- 
-export function AppSidebar() {
+];
+
+export function AppSidebar({ items = defaultItems }: { items?: MenuItem[] }) {
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>AI Chatbot</SidebarGroupLabel>
+          <SidebarGroupLabel><a href="/">AI Chatbot</a></SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
-                      <item.icon />
+                      {item.icon && <item.icon />}
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
@@ -48,5 +56,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
