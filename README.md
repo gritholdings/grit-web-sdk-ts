@@ -44,4 +44,4 @@ git commit -m "Your Message"
 git push
 ```
 
-After a git push, it should automatically start deployment. Check aws.amazon.com
+After a git push, it should automatically start deployment. Check https://aws.amazon.com.
