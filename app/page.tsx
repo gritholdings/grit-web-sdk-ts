@@ -12,6 +12,7 @@ import "@aws-amplify/ui-react/styles.css";
 import { SidebarProvider } from "@/app/components/shadcn/ui/sidebar";
 import { AppSidebar } from "@/app/components/app-sidebar";
 import { Send } from "lucide-react";
+import { Chat } from "@/app/components/chat";
 
 // Configure Amplify once
 Amplify.configure(outputs);
@@ -95,52 +96,7 @@ const App: React.FC<AppProps> = () => {
       <div className="flex h-screen bg-zinc-900 w-full">
         {/* Sidebar */}
         <AppSidebar />
-        
-        {/* Right Column: Chat Interface */}
-        <div className="flex-1 flex flex-col bg-zinc-900 min-h-screen">
-          {/* Chat Header */}
-          <div className="p-8">
-            <h1 className="text-white text-2xl">
-              What can I help with?
-            </h1>
-          </div>
-
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto px-4">
-            <div className="space-y-4">
-              {chatMessages.map((msg, index) => (
-                <div key={index} className="bg-zinc-800 rounded-lg p-4">
-                  <p className="text-white">{msg.content}</p>
-                  <p className="text-gray-400 text-sm mt-2">
-                    {msg.timestamp.toLocaleTimeString()}
-                  </p>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-          </div>
-
-          {/* Input Area */}
-          <div className="p-4">
-            <form onSubmit={handleSubmit}>
-              <div className="flex items-center bg-zinc-800 rounded-lg p-2">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={handleMessageChange}
-                  placeholder="Type your message..."
-                  className="flex-1 bg-transparent text-white placeholder-gray-400 outline-none px-2"
-                />
-                <button
-                  type="submit"
-                  className="p-2 hover:bg-zinc-700 rounded-full transition-colors"
-                >
-                  <Send className="w-5 h-5 text-gray-400" />
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <Chat />
       </div>
     </SidebarProvider>
   );
