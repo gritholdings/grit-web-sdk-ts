@@ -18,6 +18,13 @@ npm install
 ```
 
 3. Get `amplify_outputs.json` from https://docs.amplify.aws/react/reference/amplify_outputs/. Put in base directory.
+```
+{
+    "auth": {},
+    "data": {},
+    "version": "1.1"
+}
+```
 
 4. Go to https://aws.amazon.com, AWS Amplify, select the app, go to Hosting -> Environment variables -> add new:
 ```
