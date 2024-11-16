@@ -1,6 +1,6 @@
 'use client';
 
-// import { Attachment, ChatRequestOptions, CreateMessage, Message } from 'ai';
+import { Attachment, ChatRequestOptions, CreateMessage, Message } from '@/app/components/base/chat-api';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
 import React, {
@@ -15,81 +15,25 @@ import React, {
 import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 
-// import { sanitizeUIMessages } from '@/lib/utils';
+import { sanitizeUIMessages } from '@/app/components/shadcn/lib/utils';
 
 import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from '@/app/components/shadcn/ui/button';
 import { Textarea } from '@/app/components/shadcn/ui/textarea';
 
-import axios from 'axios';
-
-interface Attachment {
-  url: string;
-  name: string;
-  contentType: string;
-}
-
-// Mockup for ChatRequestOptions
-interface ChatRequestOptions {
-  experimental_attachments?: Attachment[];
-}
-
-// Mockup for CreateMessage
-interface CreateMessage {
-  role: string;
-  content: string;
-}
-
-// Mockup for Message
-interface Message {
-  id: string;
-  role: string;
-  content: string;
-  createdAt: Date;
-}
-
 const suggestedActions = [
   {
-    title: 'What is the weather',
-    label: 'in San Francisco?',
-    action: 'What is the weather in San Francisco?',
+    title: 'What is the X',
+    label: 'in Y?',
+    action: 'What is the X in Y?',
   },
   {
-    title: 'Help me draft an essay',
-    label: 'about Silicon Valley',
-    action: 'Help me draft a short essay about Silicon Valley',
+    title: 'Help me draft an A',
+    label: 'about B',
+    action: 'Help me draft an A about B',
   },
 ];
-
-const baseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
-
-// get csrftoken from cookie
-const getCookie = (name: string) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
-};
-
-// Create axios instance with default configs
-const apiClient = axios.create({
-  baseURL: baseUrl,
-  withCredentials: true,
-  headers: {
-      'Content-Type': 'application/json',
-  }
-});
-
-// Add request interceptor to include CSRF token
-apiClient.interceptors.request.use(async (config) => {
-  try {
-      const token = await getCookie('csrftoken');
-      config.headers['X-CSRFToken'] = token;
-      return config;
-  } catch (error) {
-      return Promise.reject(error);
-  }
-});
 
 export function MultimodalInput({
   chatId,
@@ -171,45 +115,29 @@ export function MultimodalInput({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
-  const submitForm = useCallback(async () => {
-    try {
-      // window.history.replaceState({}, '', `/chat/${chatId}`);
+  const submitForm = useCallback(() => {
+    window.history.replaceState({}, '', `/chat/${chatId}`);
 
-      const response = await apiClient.post(`${baseUrl}/api/threads/runs`, {
-        messages: [{
-          role: 'user',
-          content: input,
-        }],
-        content: input,
-        chat_id: chatId,
-        attachments: attachments
-      });
+    handleSubmit(undefined, {
+      experimental_attachments: attachments,
+    });
 
-      console.log(response.data);
+    setAttachments([]);
+    setLocalStorageInput('');
 
-      await handleSubmit(undefined, {
-        experimental_attachments: attachments,
-      });
-
-      setAttachments([]);
-      setLocalStorageInput('');
-
-      if (width && width > 768) {
-        textareaRef.current?.focus();
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
+    if (width && width > 768) {
+      textareaRef.current?.focus();
     }
   }, [
-    // attachments,
+    attachments,
     handleSubmit,
-    // setAttachments,
+    setAttachments,
     setLocalStorageInput,
     width,
-    chatId,
+    chatId || '',
   ]);
 
-  const uploadFile = async (file: File): Promise<Attachment | undefined> => {
+  const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -250,10 +178,10 @@ export function MultimodalInput({
           (attachment) => attachment !== undefined
         );
 
-        // setAttachments((currentAttachments) => [
-        //   ...currentAttachments,
-        //   ...successfullyUploadedAttachments as Attachment[],
-        // ]);
+        setAttachments((currentAttachments) => [
+          ...currentAttachments,
+          ...successfullyUploadedAttachments,
+        ]);
       } catch (error) {
         console.error('Error uploading files!', error);
       } finally {
@@ -266,7 +194,7 @@ export function MultimodalInput({
   return (
     <div className="relative w-full flex flex-col gap-4">
       {messages.length === 0 &&
-        // attachments.length === 0 &&
+        attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <div className="grid sm:grid-cols-2 gap-2 w-full">
             {suggestedActions.map((suggestedAction, index) => (
@@ -309,7 +237,7 @@ export function MultimodalInput({
         tabIndex={-1}
       />
 
-      {/* {(attachments.length > 0 || uploadQueue.length > 0) && (
+      {(attachments.length > 0 || uploadQueue.length > 0) && (
         <div className="flex flex-row gap-2 overflow-x-scroll items-end">
           {attachments.map((attachment) => (
             <PreviewAttachment key={attachment.url} attachment={attachment} />
@@ -327,7 +255,7 @@ export function MultimodalInput({
             />
           ))}
         </div>
-      )} */}
+      )}
 
       <Textarea
         ref={textareaRef}
@@ -359,7 +287,7 @@ export function MultimodalInput({
           onClick={(event) => {
             event.preventDefault();
             stop();
-            // setMessages((messages) => sanitizeUIMessages(messages));
+            setMessages((messages) => sanitizeUIMessages(messages));
           }}
         >
           <StopIcon size={14} />

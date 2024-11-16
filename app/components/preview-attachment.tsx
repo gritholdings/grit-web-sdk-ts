@@ -48,7 +48,7 @@ export const PreviewAttachment = ({
   );
 };
 import React from 'react';
-import { render } from '@testing-library/react';
+// import { render } from '@testing-library/react';
 
 const attachment = {
     name: 'example.jpg',
@@ -56,4 +56,4 @@ const attachment = {
     contentType: 'image/jpeg',
 };
 
-render(<PreviewAttachment attachment={attachment} isUploading={false} />);
+// render(<PreviewAttachment attachment={attachment} isUploading={false} />);
