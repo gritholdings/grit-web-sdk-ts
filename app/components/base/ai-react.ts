@@ -21,38 +21,42 @@ export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOp
     try {
       setIsLoading(true);
 
-      // Add user message to UI immediately
-      const newMessages = [...messages, { ...message, id: Date.now().toString() }];
-      setMessages(newMessages);
+      // Add user message
+      setMessages(prevMessages => [...prevMessages, { 
+        ...message, 
+        id: Date.now().toString() 
+      }]);
       
-      // Make API call with chatId from options
       const response = await apiClient.post(`/api/threads/runs`, {
         messages: [{
           role: 'user',
           content: message.content,
         }],
         content: message.content,
-        chat_id: body.id, // Use id from body object which contains chatId
+        chat_id: body.id,
         attachments: message.attachments
       });
 
-      // Add assistant response
-      const assistantMessage: Message = response.data;
-      console.log(assistantMessage);
+      // Format assistant message
+      const assistantMessage: Message = {
+        id: response.data.id || Date.now().toString(),
+        role: 'assistant',
+        content: response.data || ''  // Modify this line
+      };
 
-      setMessages([...messages, assistantMessage]);
-
+      // Update with assistant response using functional update
+      setMessages(prevMessages => [...prevMessages, assistantMessage]);
+      
       setStreamingData(response.data.streamingData);
       onFinish?.();
       return assistantMessage.id;
 
     } catch (error) {
       console.error('Chat API error:', error);
-      return null;
     } finally {
       setIsLoading(false);
     }
-  }, [messages, body, onFinish]);
+  }, [body.id, messages, onFinish]);
 
   const handleSubmit = useCallback(async (e?: React.FormEvent) => {
     e?.preventDefault();

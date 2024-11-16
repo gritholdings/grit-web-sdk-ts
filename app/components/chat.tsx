@@ -7,12 +7,12 @@ import { useState } from 'react';
 // import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
-// import { PreviewMessage, ThinkingMessage } from '@/components/custom/message';
+import { PreviewMessage, ThinkingMessage } from '@/app/components/message';
 import { useScrollToBottom } from '@/app/components/use-scroll-to-bottom';
 // import { Vote } from '@/db/schema';
 // import { fetcher } from '@/lib/utils';
 
-// import { Block, UIBlock } from './block';
+import { Block, UIBlock } from './block';
 // import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
@@ -44,24 +44,24 @@ export function Chat({
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
     useWindowSize();
 
-//   const [block, setBlock] = useState<UIBlock>({
-//     documentId: 'init',
-//     content: '',
-//     title: '',
-//     status: 'idle',
-//     isVisible: false,
-//     boundingBox: {
-//       top: windowHeight / 4,
-//       left: windowWidth / 4,
-//       width: 250,
-//       height: 50,
-//     },
-//   });
+  const [block, setBlock] = useState<UIBlock>({
+    documentId: 'init',
+    content: '',
+    title: '',
+    status: 'idle',
+    isVisible: false,
+    boundingBox: {
+      top: windowHeight / 4,
+      left: windowWidth / 4,
+      width: 250,
+      height: 50,
+    },
+  });
 
-//   const { data: votes } = useSWR<Array<Vote>>(
-//     `/api/vote?chatId=${id}`,
-//     fetcher
-//   );
+  // const { data: votes } = useSWR<Array<Vote>>(
+  //   `/api/vote?chatId=${id}`,
+  //   fetcher
+  // );
 
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
@@ -77,7 +77,7 @@ export function Chat({
         >
           {messages.length === 0 && <Overview />}
 
-          {/* {messages.map((message, index) => (
+          {messages.map((message, index) => (
             <PreviewMessage
               key={message.id}
               chatId={id}
@@ -85,19 +85,19 @@ export function Chat({
               block={block}
               setBlock={setBlock}
               isLoading={isLoading && messages.length - 1 === index}
-              vote={
-                votes
-                  ? votes.find((vote) => vote.messageId === message.id)
-                  : undefined
-              }
+              // vote={
+              //   votes
+              //     ? votes.find((vote) => vote.messageId === message.id)
+              //     : undefined
+              // }
             />
-          ))} */}
+          ))}
 
-          {/* {isLoading &&
+          {isLoading &&
             messages.length > 0 &&
             messages[messages.length - 1].role === 'user' && (
               <ThinkingMessage />
-            )} */}
+          )}
 
           <div
             ref={messagesEndRef}
