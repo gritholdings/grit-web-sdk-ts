@@ -24,7 +24,8 @@ export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOp
       // Add user message
       setMessages(prevMessages => [...prevMessages, { 
         ...message, 
-        id: Date.now().toString() 
+        id: Date.now().toString(),
+        role: message.role || 'user'
       }]);
       
       const response = await apiClient.post(`/api/threads/runs`, {
@@ -110,6 +111,7 @@ export function Chat({
     stop,
     data: streamingData,
   } = useChat({
+    chatId: id,
     body: { id, modelId: selectedModelId },
     initialMessages
   });

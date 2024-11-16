@@ -4,9 +4,11 @@ import apiClient from '@/app/components/base/api-client';
 
 // Type definitions
 interface Attachment {
+  url: string;
   name: string;
   type: string;
   content: string;
+  contentType: string;
 }
 
 interface Message {
@@ -37,25 +39,13 @@ const sendMessage = async (
   options?: ChatRequestOptions
 ): Promise<Message> => {
   try {
-    console.log('a');
-    // const response: AxiosResponse<Message> = await axios.post(
-    //   '/api/chat', // Replace with your API endpoint
-    //   message,
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       ...options?.headers,
-    //     },
-    //     signal: options?.signal,
-    //   }
-    // );
     const response = await apiClient.post(`/api/threads/runs`, {
       messages: [{
         role: 'user',
         content: message.content,
       }],
       content: message.content,
-      chat_id: body.id, // Use id from body object which contains chatId
+      chat_id: message.id, // Use id from message object which contains chatId
       attachments: message.attachments
     });
 

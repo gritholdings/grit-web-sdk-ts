@@ -12,7 +12,7 @@ import { useScrollToBottom } from '@/app/components/use-scroll-to-bottom';
 // import { Vote } from '@/db/schema';
 // import { fetcher } from '@/lib/utils';
 
-import { Block, UIBlock } from './block';
+import { Block, UIBlock } from '@/app/components/block';
 // import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
@@ -37,6 +37,7 @@ export function Chat({
     stop,
     data: streamingData,
   } = useChat({
+    chatId: id,
     body: { id, modelId: selectedModelId },
     initialMessages
   });
@@ -109,7 +110,7 @@ export function Chat({
             chatId={id}
             input={input}
             setInput={setInput}
-            handleSubmit={handleSubmit}
+            handleSubmit={(event) => handleSubmit(event as React.FormEvent)}
             isLoading={isLoading}
             stop={stop}
             attachments={attachments}

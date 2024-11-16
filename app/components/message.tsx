@@ -55,7 +55,7 @@ export const PreviewMessage = ({
             </div>
           )}
 
-          {message.toolInvocations && message.toolInvocations.length > 0 && (
+          {/* {message.toolInvocations && message.toolInvocations.length > 0 && (
             <div className="flex flex-col gap-4">
               {message.toolInvocations.map((toolInvocation) => {
                 const { toolName, toolCallId, state, args } = toolInvocation;
@@ -67,30 +67,30 @@ export const PreviewMessage = ({
                     <div key={toolCallId}>
                       {toolName === 'getWeather' ? (
                         <div></div>
-                    //     <Weather weatherAtLocation={result} />
-                    //   ) : toolName === 'createDocument' ? (
-                    //     <DocumentToolResult
-                    //       type="create"
-                    //       result={result}
-                    //       block={block}
-                    //       setBlock={setBlock}
-                    //     />
+                        <Weather weatherAtLocation={result} />
+                      ) : toolName === 'createDocument' ? (
+                        <DocumentToolResult
+                          type="create"
+                          result={result}
+                          block={block}
+                          setBlock={setBlock}
+                        />
                       ) : toolName === 'updateDocument' ? (
                         <div></div>
-                        // <DocumentToolResult
-                        //   type="update"
-                        //   result={result}
-                        //   block={block}
-                        //   setBlock={setBlock}
-                        // />
+                        <DocumentToolResult
+                          type="update"
+                          result={result}
+                          block={block}
+                          setBlock={setBlock}
+                        />
                       ) : toolName === 'requestSuggestions' ? (
                         <div></div>
-                        // <DocumentToolResult
-                        //   type="request-suggestions"
-                        //   result={result}
-                        //   block={block}
-                        //   setBlock={setBlock}
-                        // />
+                        <DocumentToolResult
+                          type="request-suggestions"
+                          result={result}
+                          block={block}
+                          setBlock={setBlock}
+                        />
                       ) : (
                         <pre>{JSON.stringify(result, null, 2)}</pre>
                       )}
@@ -104,7 +104,7 @@ export const PreviewMessage = ({
                         skeleton: ['getWeather'].includes(toolName),
                       })}
                     >
-                      {/* {toolName === 'getWeather' ? (
+                      {toolName === 'getWeather' ? (
                         <Weather />
                       ) : toolName === 'createDocument' ? (
                         <DocumentToolCall type="create" args={args} />
@@ -115,15 +115,15 @@ export const PreviewMessage = ({
                           type="request-suggestions"
                           args={args}
                         />
-                      ) : null} */}
+                      ) : null}
                     </div>
                   );
                 }
               })}
             </div>
-          )}
+          )} */}
 
-          {message.experimental_attachments && (
+          {/* {message.experimental_attachments && (
             <div className="flex flex-row gap-2">
               {message.experimental_attachments.map((attachment) => (
                 <PreviewAttachment
@@ -132,7 +132,7 @@ export const PreviewMessage = ({
                 />
               ))}
             </div>
-          )}
+          )} */}
 
           {/* <MessageActions
             key={`action-${message.id}`}

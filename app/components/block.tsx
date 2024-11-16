@@ -10,27 +10,27 @@ import {
   useState,
 } from 'react';
 import { toast } from 'sonner';
-import useSWR, { useSWRConfig } from 'swr';
+// import useSWR, { useSWRConfig } from 'swr';
 import {
   useCopyToClipboard,
   useDebounceCallback,
   useWindowSize,
 } from 'usehooks-ts';
 
-import { Document, Suggestion, Vote } from '@/db/schema';
-import { fetcher } from '@/lib/utils';
+// import { Document, Suggestion, Vote } from '@/db/schema';
+// import { fetcher } from '@/lib/utils';
 
-import { DiffView } from './diffview';
-import { DocumentSkeleton } from './document-skeleton';
-import { Editor } from './editor';
+// import { DiffView } from './diffview';
+// import { DocumentSkeleton } from './document-skeleton';
+// import { Editor } from './editor';
 import { CopyIcon, CrossIcon, DeltaIcon, RedoIcon, UndoIcon } from './icons';
 import { PreviewMessage } from './message';
 import { MultimodalInput } from './multimodal-input';
-import { Toolbar } from './toolbar';
+// import { Toolbar } from './toolbar';
 import { useScrollToBottom } from './use-scroll-to-bottom';
 // import { VersionFooter } from './version-footer';
 import { Button } from '@/app/components/shadcn/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+// import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 export interface UIBlock {
   title: string;
   documentId: string;
@@ -59,7 +59,7 @@ export function Block({
   setBlock,
   messages,
   setMessages,
-  votes,
+  // votes,
 }: {
   chatId: string;
   input: string;
@@ -72,7 +72,7 @@ export function Block({
   setBlock: Dispatch<SetStateAction<UIBlock>>;
   messages: Array<Message>;
   setMessages: Dispatch<SetStateAction<Array<Message>>>;
-  votes: Array<Vote> | undefined;
+  // votes: Array<Vote> | undefined;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions
@@ -87,145 +87,145 @@ export function Block({
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
-  const {
-    data: documents,
-    isLoading: isDocumentsFetching,
-    mutate: mutateDocuments,
-  } = useSWR<Array<Document>>(
-    block && block.status !== 'streaming'
-      ? `/api/document?id=${block.documentId}`
-      : null,
-    fetcher
-  );
+  // const {
+  //   data: documents,
+  //   isLoading: isDocumentsFetching,
+  //   mutate: mutateDocuments,
+  // } = useSWR<Array<Document>>(
+  //   block && block.status !== 'streaming'
+  //     ? `/api/document?id=${block.documentId}`
+  //     : null,
+  //   fetcher
+  // );
 
-  const { data: suggestions } = useSWR<Array<Suggestion>>(
-    documents && block && block.status !== 'streaming'
-      ? `/api/suggestions?documentId=${block.documentId}`
-      : null,
-    fetcher,
-    {
-      dedupingInterval: 5000,
-    }
-  );
+  // const { data: suggestions } = useSWR<Array<Suggestion>>(
+  //   documents && block && block.status !== 'streaming'
+  //     ? `/api/suggestions?documentId=${block.documentId}`
+  //     : null,
+  //   fetcher,
+  //   {
+  //     dedupingInterval: 5000,
+  //   }
+  // );
 
   const [mode, setMode] = useState<'edit' | 'diff'>('edit');
   const [document, setDocument] = useState<Document | null>(null);
   const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
 
-  useEffect(() => {
-    if (documents && documents.length > 0) {
-      const mostRecentDocument = documents.at(-1);
+  // useEffect(() => {
+  //   if (documents && documents.length > 0) {
+  //     const mostRecentDocument = documents.at(-1);
 
-      if (mostRecentDocument) {
-        setDocument(mostRecentDocument);
-        setCurrentVersionIndex(documents.length - 1);
-        setBlock((currentBlock) => ({
-          ...currentBlock,
-          content: mostRecentDocument.content ?? '',
-        }));
-      }
-    }
-  }, [documents, setBlock]);
+  //     if (mostRecentDocument) {
+  //       setDocument(mostRecentDocument);
+  //       setCurrentVersionIndex(documents.length - 1);
+  //       setBlock((currentBlock) => ({
+  //         ...currentBlock,
+  //         content: mostRecentDocument.content ?? '',
+  //       }));
+  //     }
+  //   }
+  // }, [documents, setBlock]);
 
-  useEffect(() => {
-    mutateDocuments();
-  }, [block.status, mutateDocuments]);
+  // useEffect(() => {
+  //   mutateDocuments();
+  // }, [block.status, mutateDocuments]);
 
-  const { mutate } = useSWRConfig();
+  // const { mutate } = useSWRConfig();
   const [isContentDirty, setIsContentDirty] = useState(false);
 
-  const handleContentChange = useCallback(
-    (updatedContent: string) => {
-      if (!block) return;
+  // const handleContentChange = useCallback(
+  //   (updatedContent: string) => {
+  //     if (!block) return;
 
-      mutate<Array<Document>>(
-        `/api/document?id=${block.documentId}`,
-        async (currentDocuments) => {
-          if (!currentDocuments) return undefined;
+  //     mutate<Array<Document>>(
+  //       `/api/document?id=${block.documentId}`,
+  //       async (currentDocuments) => {
+  //         if (!currentDocuments) return undefined;
 
-          const currentDocument = currentDocuments.at(-1);
+  //         const currentDocument = currentDocuments.at(-1);
 
-          if (!currentDocument || !currentDocument.content) {
-            setIsContentDirty(false);
-            return currentDocuments;
-          }
+  //         if (!currentDocument || !currentDocument.content) {
+  //           setIsContentDirty(false);
+  //           return currentDocuments;
+  //         }
 
-          if (currentDocument.content !== updatedContent) {
-            await fetch(`/api/document?id=${block.documentId}`, {
-              method: 'POST',
-              body: JSON.stringify({
-                title: block.title,
-                content: updatedContent,
-              }),
-            });
+  //         if (currentDocument.content !== updatedContent) {
+  //           await fetch(`/api/document?id=${block.documentId}`, {
+  //             method: 'POST',
+  //             body: JSON.stringify({
+  //               title: block.title,
+  //               content: updatedContent,
+  //             }),
+  //           });
 
-            setIsContentDirty(false);
+  //           setIsContentDirty(false);
 
-            const newDocument = {
-              ...currentDocument,
-              content: updatedContent,
-              createdAt: new Date(),
-            };
+  //           const newDocument = {
+  //             ...currentDocument,
+  //             content: updatedContent,
+  //             createdAt: new Date(),
+  //           };
 
-            return [...currentDocuments, newDocument];
-          } else {
-            return currentDocuments;
-          }
-        },
-        { revalidate: false }
-      );
-    },
-    [block, mutate]
-  );
+  //           return [...currentDocuments, newDocument];
+  //         } else {
+  //           return currentDocuments;
+  //         }
+  //       },
+  //       { revalidate: false }
+  //     );
+  //   },
+  //   [block, mutate]
+  // );
 
-  const debouncedHandleContentChange = useDebounceCallback(
-    handleContentChange,
-    2000
-  );
+  // const debouncedHandleContentChange = useDebounceCallback(
+  //   handleContentChange,
+  //   2000
+  // );
 
-  const saveContent = useCallback(
-    (updatedContent: string, debounce: boolean) => {
-      if (document && updatedContent !== document.content) {
-        setIsContentDirty(true);
+  // const saveContent = useCallback(
+  //   (updatedContent: string, debounce: boolean) => {
+  //     if (document && updatedContent !== document.content) {
+  //       setIsContentDirty(true);
 
-        if (debounce) {
-          debouncedHandleContentChange(updatedContent);
-        } else {
-          handleContentChange(updatedContent);
-        }
-      }
-    },
-    [document, debouncedHandleContentChange, handleContentChange]
-  );
+  //       if (debounce) {
+  //         debouncedHandleContentChange(updatedContent);
+  //       } else {
+  //         handleContentChange(updatedContent);
+  //       }
+  //     }
+  //   },
+  //   [document, debouncedHandleContentChange, handleContentChange]
+  // );
 
-  function getDocumentContentById(index: number) {
-    if (!documents) return '';
-    if (!documents[index]) return '';
-    return documents[index].content ?? '';
-  }
+  // function getDocumentContentById(index: number) {
+  //   if (!documents) return '';
+  //   if (!documents[index]) return '';
+  //   return documents[index].content ?? '';
+  // }
 
-  const handleVersionChange = (type: 'next' | 'prev' | 'toggle' | 'latest') => {
-    if (!documents) return;
+  // const handleVersionChange = (type: 'next' | 'prev' | 'toggle' | 'latest') => {
+  //   if (!documents) return;
 
-    if (type === 'latest') {
-      setCurrentVersionIndex(documents.length - 1);
-      setMode('edit');
-    }
+  //   if (type === 'latest') {
+  //     setCurrentVersionIndex(documents.length - 1);
+  //     setMode('edit');
+  //   }
 
-    if (type === 'toggle') {
-      setMode((mode) => (mode === 'edit' ? 'diff' : 'edit'));
-    }
+  //   if (type === 'toggle') {
+  //     setMode((mode) => (mode === 'edit' ? 'diff' : 'edit'));
+  //   }
 
-    if (type === 'prev') {
-      if (currentVersionIndex > 0) {
-        setCurrentVersionIndex((index) => index - 1);
-      }
-    } else if (type === 'next') {
-      if (currentVersionIndex < documents.length - 1) {
-        setCurrentVersionIndex((index) => index + 1);
-      }
-    }
-  };
+  //   if (type === 'prev') {
+  //     if (currentVersionIndex > 0) {
+  //       setCurrentVersionIndex((index) => index - 1);
+  //     }
+  //   } else if (type === 'next') {
+  //     if (currentVersionIndex < documents.length - 1) {
+  //       setCurrentVersionIndex((index) => index + 1);
+  //     }
+  //   }
+  // };
 
   const [isToolbarVisible, setIsToolbarVisible] = useState(false);
 
@@ -235,10 +235,10 @@ export function Block({
    * we mark it as the current version.
    */
 
-  const isCurrentVersion =
-    documents && documents.length > 0
-      ? currentVersionIndex === documents.length - 1
-      : true;
+  // const isCurrentVersion =
+  //   documents && documents.length > 0
+  //     ? currentVersionIndex === documents.length - 1
+  //     : true;
 
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const isMobile = windowWidth ? windowWidth < 768 : false;
@@ -274,7 +274,7 @@ export function Block({
             transition: { delay: 0 },
           }}
         >
-          <AnimatePresence>
+          {/* <AnimatePresence>
             {!isCurrentVersion && (
               <motion.div
                 className="left-0 absolute h-dvh w-[400px] top-0 bg-zinc-900/50 z-50"
@@ -283,14 +283,14 @@ export function Block({
                 exit={{ opacity: 0 }}
               />
             )}
-          </AnimatePresence>
+          </AnimatePresence> */}
 
           <div className="flex flex-col h-full justify-between items-center gap-4">
             <div
               ref={messagesContainerRef}
               className="flex flex-col gap-4 h-full items-center overflow-y-scroll px-4 pt-20"
             >
-              {messages.map((message, index) => (
+              {/* {messages.map((message, index) => (
                 <PreviewMessage
                   chatId={chatId}
                   key={message.id}
@@ -304,7 +304,7 @@ export function Block({
                       : undefined
                   }
                 />
-              ))}
+              ))} */}
 
               <div
                 ref={messagesEndRef}
@@ -421,13 +421,13 @@ export function Block({
                 </div>
               ) : document ? (
                 <div className="text-sm text-muted-foreground">
-                  {`Updated ${formatDistance(
+                  {/* {`Updated ${formatDistance(
                     new Date(document.createdAt),
                     new Date(),
                     {
                       addSuffix: true,
                     }
-                  )}`}
+                  )}`} */}
                 </div>
               ) : (
                 <div className="w-32 h-3 mt-2 bg-muted-foreground/20 rounded-md animate-pulse" />
@@ -436,7 +436,7 @@ export function Block({
           </div>
 
           <div className="flex flex-row gap-1">
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
@@ -505,13 +505,13 @@ export function Block({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>View changes</TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </div>
 
         <div className="prose dark:prose-invert dark:bg-muted bg-background h-full overflow-y-scroll px-4 py-8 md:p-20 !max-w-full pb-40 items-center">
           <div className="flex flex-row max-w-[600px] mx-auto">
-            {isDocumentsFetching && !block.content ? (
+            {/* {isDocumentsFetching && !block.content ? (
               <DocumentSkeleton />
             ) : mode === 'edit' ? (
               <Editor
@@ -531,13 +531,13 @@ export function Block({
                 oldContent={getDocumentContentById(currentVersionIndex - 1)}
                 newContent={getDocumentContentById(currentVersionIndex)}
               />
-            )}
+            )} */}
 
-            {suggestions ? (
+            {/* {suggestions ? (
               <div className="md:hidden h-dvh w-12 shrink-0" />
-            ) : null}
+            ) : null} */}
 
-            <AnimatePresence>
+            {/* <AnimatePresence>
               {isCurrentVersion && (
                 <Toolbar
                   isToolbarVisible={isToolbarVisible}
@@ -548,7 +548,7 @@ export function Block({
                   setMessages={setMessages}
                 />
               )}
-            </AnimatePresence>
+            </AnimatePresence> */}
           </div>
         </div>
 
