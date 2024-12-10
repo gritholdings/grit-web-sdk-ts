@@ -7,6 +7,7 @@ import { useState } from 'react';
 // import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
+import { ChatHeader } from '@/app/components/chat-header';
 import { PreviewMessage, ThinkingMessage } from '@/app/components/message';
 import { useScrollToBottom } from '@/app/components/use-scroll-to-bottom';
 // import { Vote } from '@/db/schema';
@@ -72,6 +73,7 @@ export function Chat({
   return (
     <>
       <div className="flex flex-col min-w-0 h-dvh bg-background">
+        <ChatHeader/>
         <div
           ref={messagesContainerRef}
           className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
