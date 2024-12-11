@@ -59,19 +59,24 @@ export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOp
     }
   }, [body.id, messages, onFinish]);
 
-  const handleSubmit = useCallback(async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const handleSubmit = useCallback(
+    (event?: { preventDefault?: () => void }) => {
+      event?.preventDefault?.();
+      if (!input.trim() || isLoading) return;
+  
+      const userMessage = {
+        id: Date.now().toString(),
+        role: 'user' as const,
+        content: input
+      };
+  
+      setInput('');
+      return append(userMessage);
+    },
+    [input, isLoading, append, setInput]
+  );
 
-    const userMessage = {
-      id: Date.now().toString(),
-      role: 'user' as const,
-      content: input
-    };
 
-    setInput('');
-    await append(userMessage);
-  }, [input, isLoading, append]);
 
   const stop = useCallback(() => {
     // Implement cancel logic here if needed

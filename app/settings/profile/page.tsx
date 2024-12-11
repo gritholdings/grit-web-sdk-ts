@@ -41,10 +41,10 @@ export default function SettingsPage() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen">
-        <AppSidebar items={[
+        {/* <AppSidebar items={[
           { title: "Profile", url: "/settings/profile" },
           { title: "Billing", url: "/settings/billing" }
-        ]} />
+        ]} /> */}
 
         {/* Main Content */}
         <div className="flex-1">

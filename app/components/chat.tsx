@@ -4,16 +4,14 @@ import { Attachment, Message } from '@/app/components/base/chat-api';
 import { useChat } from '@/app/components/base/ai-react';
 import { AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-// import useSWR, { useSWRConfig } from 'swr';
 import { useWindowSize } from 'usehooks-ts';
 
-import { ChatHeader } from '@/app/components/chat-header';
-import { PreviewMessage, ThinkingMessage } from '@/app/components/message';
-import { useScrollToBottom } from '@/app/components/use-scroll-to-bottom';
-// import { Vote } from '@/db/schema';
-// import { fetcher } from '@/lib/utils';
+import { ChatHeader } from './chat-header';
+import { PreviewMessage, ThinkingMessage } from './message';
+import { useScrollToBottom } from './use-scroll-to-bottom';
+import { fetcher } from '@/app/components/shadcn/lib/utils';
 
-import { Block, UIBlock } from '@/app/components/block';
+import { Block, UIBlock } from './block';
 // import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
@@ -27,20 +25,23 @@ export function Chat({
   initialMessages: Array<Message>;
   selectedModelId: string;
 }) {
+
   const {
     messages,
     setMessages,
     handleSubmit,
     input,
-    setInput,  
+    setInput,
     append,
     isLoading,
     stop,
     data: streamingData,
   } = useChat({
     chatId: id,
-    body: { id, modelId: selectedModelId },
-    initialMessages
+    initialMessages,
+    onFinish: () => {
+      // mutate('/api/history');
+    },
   });
 
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
@@ -60,11 +61,6 @@ export function Chat({
     },
   });
 
-  // const { data: votes } = useSWR<Array<Vote>>(
-  //   `/api/vote?chatId=${id}`,
-  //   fetcher
-  // );
-
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
@@ -72,8 +68,8 @@ export function Chat({
 
   return (
     <>
-      <div className="flex flex-col min-w-0 h-dvh bg-background">
-        <ChatHeader/>
+      <div className="flex flex-col min-w-0 h-dvh bg-background w-full">
+        <ChatHeader />
         <div
           ref={messagesContainerRef}
           className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
@@ -88,11 +84,6 @@ export function Chat({
               block={block}
               setBlock={setBlock}
               isLoading={isLoading && messages.length - 1 === index}
-              // vote={
-              //   votes
-              //     ? votes.find((vote) => vote.messageId === message.id)
-              //     : undefined
-              // }
             />
           ))}
 
@@ -100,7 +91,7 @@ export function Chat({
             messages.length > 0 &&
             messages[messages.length - 1].role === 'user' && (
               <ThinkingMessage />
-          )}
+            )}
 
           <div
             ref={messagesEndRef}
@@ -112,7 +103,7 @@ export function Chat({
             chatId={id}
             input={input}
             setInput={setInput}
-            handleSubmit={(event) => handleSubmit(event as React.FormEvent)}
+            handleSubmit={handleSubmit}
             isLoading={isLoading}
             stop={stop}
             attachments={attachments}
@@ -125,7 +116,7 @@ export function Chat({
       </div>
 
       <AnimatePresence>
-        {/* {block && block.isVisible && (
+        {block && block.isVisible && (
           <Block
             chatId={id}
             input={input}
@@ -140,9 +131,8 @@ export function Chat({
             setBlock={setBlock}
             messages={messages}
             setMessages={setMessages}
-            votes={votes}
           />
-        )} */}
+        )}
       </AnimatePresence>
 
       {/* <BlockStreamHandler streamingData={streamingData} setBlock={setBlock} /> */}

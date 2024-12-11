@@ -1,60 +1,76 @@
-import { Home, Settings } from "lucide-react"
- 
+'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+// import { type User } from 'next-auth';
+
+import { PlusIcon } from '@/app/components/icons';
+// import { SidebarHistory } from '@/app/components/sidebar-history';
+// import { SidebarUserNav } from '@/app/components/sidebar-user-nav';
+import { Button } from '@/app/components/shadcn/ui/button';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/app/components/shadcn/ui/sidebar";
+  useSidebar,
+} from '@/app/components/shadcn/ui/sidebar';
+import { BetterTooltip } from '@/app/components/shadcn/ui/tooltip';
 
-import { LucideIcon } from "lucide-react";
+export function AppSidebar({ }: { }) {
+  const router = useRouter();
+  const { setOpenMobile } = useSidebar();
 
-interface MenuItem {
-  title: string;
-  url: string;
-  icon?: LucideIcon;
-}
-
-// Default items (your original structure)
-const defaultItems = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Home,
-  },
-  {
-    title: "Settings",
-    url: "/settings/profile",
-    icon: Settings,
-  },
-];
-
-export function AppSidebar({ items = defaultItems }: { items?: MenuItem[] }) {
   return (
-    <Sidebar>
+    <Sidebar className="group-data-[side=left]:border-r-0">
+      <SidebarHeader>
+        <SidebarMenu>
+          <div className="flex flex-row justify-between items-center bg-white">
+            <div
+              onClick={() => {
+                setOpenMobile(false);
+                router.push('/');
+                router.refresh();
+              }}
+              className="flex flex-row gap-3 items-center"
+            >
+              <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
+                Chatbot
+              </span>
+            </div>
+            <BetterTooltip content="New Chat" align="start">
+              <Button
+                variant="ghost"
+                className="p-2 h-fit"
+                onClick={() => {
+                  setOpenMobile(false);
+                  router.push('/');
+                  router.refresh();
+                }}
+              >
+                <PlusIcon />
+              </Button>
+            </BetterTooltip>
+          </div>
+        </SidebarMenu>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel><a href="/">AI Chatbot</a></SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
+          {/* <SidebarHistory user={user} /> */}
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="gap-0">
+        {/* {user && (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarUserNav user={user} />
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )} */}
+      </SidebarFooter>
     </Sidebar>
   );
 }

@@ -93,7 +93,7 @@ const App: React.FC<AppProps> = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-zinc-900 w-full">
+      <div className="flex h-screen w-full">
         {/* Sidebar */}
         <AppSidebar />
         <Chat id={''} initialMessages={[]} selectedModelId={''} />

@@ -17,7 +17,6 @@ export const Overview: React.FC<OverviewProps> = ({ className }) => {
         text-center 
         max-w-xl
         mx-auto
-        text-white
         ${className || ''}
       `}
     >

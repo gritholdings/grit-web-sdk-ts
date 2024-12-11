@@ -35,17 +35,6 @@ export function ChatHeader({ }: { }) {
           </Button>
         </BetterTooltip>
       )}
-      <Button
-        variant="outline"
-        className="order-2 md:order-1 md:px-2 px-2 md:h-fit ml-auto md:ml-0"
-        onClick={() => {
-          router.push('/');
-          router.refresh();
-        }}
-      >
-      <PlusIcon />
-      <span className="md:sr-only">New Chat</span>
-      </Button>
       {/* <Button
         className="bg-zinc-900 hover:bg-zinc-800 text-zinc-50 hidden md:flex py-1.5 px-2 h-fit md:h-[34px] order-4 md:ml-auto"
         asChild
