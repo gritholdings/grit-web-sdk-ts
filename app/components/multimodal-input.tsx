@@ -22,6 +22,8 @@ import { PreviewAttachment } from './preview-attachment';
 import { Button } from '@/app/components/shadcn/ui/button';
 import { Textarea } from '@/app/components/shadcn/ui/textarea';
 
+import apiClient from '@/app/components/base/api-client';
+
 const suggestedActions = [
   {
     title: 'What is the X',
@@ -72,6 +74,7 @@ export function MultimodalInput({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
+  const [threadId, setThreadId] = useState<string | null>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -140,14 +143,35 @@ export function MultimodalInput({
     chatId || '',
   ]);
 
+  const createThread = async () => {
+    try {
+      const response = await apiClient.post('/api/threads/create');
+      if (response.status !== 201) {
+        throw new Error('Failed to create thread');
+      }
+      console.log(response['thread_id']);
+      setThreadId(response['thread_id']);
+      return response['thread_id'];
+    } catch (error) {
+      console.error('Error creating thread:', error);
+      toast.error('Failed to create thread');
+    }
+  };
+
   const uploadFile = async (file: File) => {
+    let currentThreadId = '';
+    if (messages.length === 0) {
+      currentThreadId = await createThread();
+    }
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('thread_id', currentThreadId as string);
 
     try {
-      const response = await fetch(`/api/files/upload`, {
-        method: 'POST',
-        body: formData,
+      const response = await apiClient.post(`/api/files/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (response.ok) {

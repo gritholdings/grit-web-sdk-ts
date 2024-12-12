@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Message, CreateMessage } from '@/app/components/base/chat-api';
 
 import apiClient from '@/app/components/base/api-client';
@@ -11,15 +11,49 @@ interface UseChatOptions {
   chatId: string;
 }
 
+const createThread = async (): Promise<string> => {
+  try {
+    const response = await apiClient.post('/api/threads/create');
+    if (response.status !== 201) {
+      throw new Error('Failed to create thread');
+    }
+    return response.data.thread_id;
+  } catch (error) {
+    console.error('Error creating thread:', error);
+    throw new Error('Failed to create thread');
+  }
+};
+
+
 export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOptions) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [streamingData, setStreamingData] = useState<any>(null);
+  const [currentThreadId, setCurrentThreadId] = useState('');
+
+  // Initialize thread on component mount if there are initial messages
+  useEffect(() => {
+    const initializeThread = async () => {
+      if (initialMessages.length > 0 && !currentThreadId) {
+        const newThreadId = await createThread();
+        setCurrentThreadId(newThreadId);
+      }
+    };
+    
+    initializeThread();
+  }, [initialMessages.length, currentThreadId]);
 
   const append = useCallback(async (message: CreateMessage) => {
     try {
       setIsLoading(true);
+
+      let threadId = currentThreadId;
+      if (!threadId) {
+        threadId = await createThread();
+        setCurrentThreadId(threadId);
+      }
+
 
       // Add user message
       setMessages(prevMessages => [...prevMessages, { 
@@ -33,6 +67,7 @@ export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOp
           role: 'user',
           content: message.content,
         }],
+        thread_id: threadId,
         content: message.content,
         chat_id: body.id,
         attachments: message.attachments
