@@ -1,5 +1,6 @@
 'use client';
 
+import { createThread } from '@/app/components/base/ai-react';
 import { Attachment, ChatRequestOptions, CreateMessage, Message } from '@/app/components/base/chat-api';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
@@ -138,19 +139,6 @@ export function MultimodalInput({
     width,
     chatId || '',
   ]);
-
-  const createThread = async () => {
-    try {
-      const response = await apiClient.post('/api/threads/create');
-      if (response.status !== 201) {
-        throw new Error('Failed to create thread');
-      }
-      return response['thread_id'];
-    } catch (error) {
-      console.error('Error creating thread:', error);
-      toast.error('Failed to create thread');
-    }
-  };
 
   const uploadFile = async (file: File) => {
     let currentThreadId = '';

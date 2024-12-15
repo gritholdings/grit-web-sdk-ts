@@ -11,7 +11,7 @@ interface UseChatOptions {
   chatId: string;
 }
 
-const createThread = async (): Promise<string> => {
+export const createThread = async (): Promise<string> => {
   try {
     const response = await apiClient.post('/api/threads/create');
     if (response.status !== 201) {
