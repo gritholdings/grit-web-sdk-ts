@@ -17,6 +17,7 @@ interface Message {
   role: 'user' | 'assistant';
   createdAt?: Date;
   attachments?: Attachment[];
+  experimental_attachments?: Attachment[];
 }
 
 interface CreateMessage {
@@ -31,6 +32,7 @@ interface ChatRequestOptions {
   headers?: Record<string, string>;
   body?: any;
   signal?: AbortSignal;
+  experimental_attachments?: Attachment[];
 }
 
 // API client function
@@ -38,12 +40,10 @@ const sendMessage = async (
   message: CreateMessage,
   options?: ChatRequestOptions
 ): Promise<Message> => {
+  // unused
   try {
     const response = await apiClient.post(`/api/threads/runs`, {
-      messages: [{
-        role: 'user',
-        content: message.content,
-      }],
+      message: message.content,
       content: message.content,
       chat_id: message.id, // Use id from message object which contains chatId
       attachments: message.attachments

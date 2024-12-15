@@ -47,13 +47,3 @@ export const PreviewAttachment = ({
     </div>
   );
 };
-import React from 'react';
-// import { render } from '@testing-library/react';
-
-const attachment = {
-    name: 'example.jpg',
-    url: 'https://example.com/example.jpg',
-    contentType: 'image/jpeg',
-};
-
-// render(<PreviewAttachment attachment={attachment} isUploading={false} />);

@@ -120,12 +120,8 @@ export function MultimodalInput({
 
   const submitForm = useCallback(() => {
     // window.history.replaceState({}, '', `/chat/${chatId}`);
-
-    // handleSubmit(undefined, {
-    //   experimental_attachments: attachments,
-    // });
-
     handleSubmit(undefined, {
+      experimental_attachments: attachments,
     });
 
     setAttachments([]);
@@ -149,8 +145,6 @@ export function MultimodalInput({
       if (response.status !== 201) {
         throw new Error('Failed to create thread');
       }
-      console.log(response['thread_id']);
-      setThreadId(response['thread_id']);
       return response['thread_id'];
     } catch (error) {
       console.error('Error creating thread:', error);
@@ -174,22 +168,17 @@ export function MultimodalInput({
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const { url, pathname, contentType } = data;
+      const { url, file_name, content_type } = response.data;
 
-        return {
-          url,
-          name: pathname,
-          contentType: contentType,
-          type: 'file',
-          content: pathname
-        };
-      } else {
-        const { error } = await response.json();
-        toast.error(error);
-      }
+      return {
+        url,
+        name: file_name,
+        contentType: content_type,
+        type: 'file',
+        content: file_name
+      };
     } catch (error) {
+      console.error('Error uploading file:', error);
       toast.error('Failed to upload file, please try again!');
     }
   };
@@ -206,7 +195,6 @@ export function MultimodalInput({
         const successfullyUploadedAttachments = uploadedAttachments.filter(
           (attachment) => attachment !== undefined
         );
-
         setAttachments((currentAttachments) => [
           ...currentAttachments,
           ...successfullyUploadedAttachments,

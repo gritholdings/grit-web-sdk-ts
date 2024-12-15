@@ -1,6 +1,6 @@
 'use client';
 
-import { Message } from '@/app/components/base/chat-api';
+// import { Message } from 'ai';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
 import { Dispatch, SetStateAction } from 'react';
@@ -15,19 +15,21 @@ import { Markdown } from './markdown';
 import { PreviewAttachment } from './preview-attachment';
 // import { Weather } from './weather';
 
+import { Attachment, ChatRequestOptions, CreateMessage, Message } from '@/app/components/base/chat-api';
+
 export const PreviewMessage = ({
   chatId,
   message,
   block,
   setBlock,
-//   vote,
+  // vote,
   isLoading,
 }: {
   chatId: string;
   message: Message;
   block: UIBlock;
   setBlock: Dispatch<SetStateAction<UIBlock>>;
-//   vote: Vote | undefined;
+  // vote: Vote | undefined;
   isLoading: boolean;
 }) => {
   return (
@@ -39,7 +41,7 @@ export const PreviewMessage = ({
     >
       <div
         className={cx(
-          'bg-sky-600 group-data-[role=user]/message:bg-primary group-data-[role=user]/message:text-primary-foreground flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl'
+          'group-data-[role=user]/message:bg-primary group-data-[role=user]/message:text-primary-foreground flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl'
         )}
       >
         {message.role === 'assistant' && (
@@ -66,7 +68,6 @@ export const PreviewMessage = ({
                   return (
                     <div key={toolCallId}>
                       {toolName === 'getWeather' ? (
-                        <div></div>
                         <Weather weatherAtLocation={result} />
                       ) : toolName === 'createDocument' ? (
                         <DocumentToolResult
@@ -76,7 +77,6 @@ export const PreviewMessage = ({
                           setBlock={setBlock}
                         />
                       ) : toolName === 'updateDocument' ? (
-                        <div></div>
                         <DocumentToolResult
                           type="update"
                           result={result}
@@ -84,7 +84,6 @@ export const PreviewMessage = ({
                           setBlock={setBlock}
                         />
                       ) : toolName === 'requestSuggestions' ? (
-                        <div></div>
                         <DocumentToolResult
                           type="request-suggestions"
                           result={result}
@@ -123,7 +122,7 @@ export const PreviewMessage = ({
             </div>
           )} */}
 
-          {/* {message.experimental_attachments && (
+          {message.experimental_attachments && (
             <div className="flex flex-row gap-2">
               {message.experimental_attachments.map((attachment) => (
                 <PreviewAttachment
@@ -132,7 +131,7 @@ export const PreviewMessage = ({
                 />
               ))}
             </div>
-          )} */}
+          )}
 
           {/* <MessageActions
             key={`action-${message.id}`}

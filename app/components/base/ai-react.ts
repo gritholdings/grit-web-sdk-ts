@@ -63,10 +63,7 @@ export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOp
       }]);
       
       const response = await apiClient.post(`/api/threads/runs`, {
-        messages: [{
-          role: 'user',
-          content: message.content,
-        }],
+        message: message.content,
         thread_id: threadId,
         content: message.content,
         chat_id: body.id,
