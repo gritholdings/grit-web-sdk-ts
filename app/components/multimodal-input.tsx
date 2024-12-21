@@ -130,7 +130,9 @@ export function MultimodalInput({
       experimental_attachments: attachments,
     });
 
-    setAttachments([]);
+    // Keep <PreviewAttachment> showing at all times for now in the
+    // same thread because backend doesn't return the attachment details yet.
+    // setAttachments([]);
     setLocalStorageInput('');
 
     if (width && width > 768) {
