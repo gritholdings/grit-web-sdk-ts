@@ -135,6 +135,8 @@ export function Chat({
             setBlock={setBlock}
             messages={messages}
             setMessages={setMessages}
+            currentThreadId={currentThreadId}
+            setCurrentThreadId={setCurrentThreadId}
           />
         )}
       </AnimatePresence>

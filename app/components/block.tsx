@@ -60,6 +60,8 @@ export function Block({
   messages,
   setMessages,
   // votes,
+  currentThreadId,
+  setCurrentThreadId,
 }: {
   chatId: string;
   input: string;
@@ -83,6 +85,8 @@ export function Block({
     },
     chatRequestOptions?: ChatRequestOptions
   ) => void;
+  currentThreadId: string;
+  setCurrentThreadId: Dispatch<SetStateAction<string>>;
 }) {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
@@ -326,6 +330,8 @@ export function Block({
                 append={append}
                 className="bg-background dark:bg-muted"
                 setMessages={setMessages}
+                currentThreadId={currentThreadId}
+                setCurrentThreadId={setCurrentThreadId}
               />
             </form>
           </div>
