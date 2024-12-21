@@ -124,7 +124,9 @@ export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOp
     append,
     isLoading,
     stop,
-    data: streamingData
+    data: streamingData,
+    currentThreadId,
+    setCurrentThreadId
   };
 }
 

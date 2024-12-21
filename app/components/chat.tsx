@@ -36,6 +36,8 @@ export function Chat({
     isLoading,
     stop,
     data: streamingData,
+    currentThreadId,
+    setCurrentThreadId,
   } = useChat({
     chatId: id,
     initialMessages,
@@ -111,6 +113,8 @@ export function Chat({
             messages={messages}
             setMessages={setMessages}
             append={append}
+            currentThreadId={currentThreadId}
+            setCurrentThreadId={setCurrentThreadId}
           />
         </form>
       </div>

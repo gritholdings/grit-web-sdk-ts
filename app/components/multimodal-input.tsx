@@ -24,6 +24,7 @@ import { Button } from '@/app/components/shadcn/ui/button';
 import { Textarea } from '@/app/components/shadcn/ui/textarea';
 
 import apiClient from '@/app/components/base/api-client';
+import { set } from 'date-fns';
 
 const suggestedActions = [
   {
@@ -51,6 +52,8 @@ export function MultimodalInput({
   append,
   handleSubmit,
   className,
+  currentThreadId,
+  setCurrentThreadId,
 }: {
   chatId: string;
   input: string;
@@ -72,6 +75,8 @@ export function MultimodalInput({
     chatRequestOptions?: ChatRequestOptions
   ) => void;
   className?: string;
+  currentThreadId: string;
+  setCurrentThreadId: (id: string) => void;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
@@ -141,13 +146,14 @@ export function MultimodalInput({
   ]);
 
   const uploadFile = async (file: File) => {
-    let currentThreadId = '';
-    if (messages.length === 0) {
-      currentThreadId = await createThread();
+    let threadId = currentThreadId;
+    if (!threadId) {
+      threadId = await createThread();
+      setCurrentThreadId(threadId);
     }
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('thread_id', currentThreadId as string);
+    formData.append('thread_id', threadId);
 
     try {
       const response = await apiClient.post(`/api/files/upload`, formData, {
