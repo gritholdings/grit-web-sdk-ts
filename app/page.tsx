@@ -46,7 +46,7 @@ const App: React.FC<AppProps> = () => {
         if (response.data.is_authenticated) {
           console.log('User authenticated');
         } else {
-          console.log('Login expired. Please log in again.');
+          window.alert('Login expired. Please log in again.');
           window.location.href = `${baseUrl}/auth/login`;
         }
       } catch (error) {
