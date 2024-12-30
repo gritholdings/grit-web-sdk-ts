@@ -14,6 +14,8 @@ import { AppSidebar } from "@/app/components/app-sidebar";
 import { Send } from "lucide-react";
 import { Chat } from "@/app/components/chat";
 
+import apiClient from '@/app/components/base/api-client';
+
 // Configure Amplify once
 Amplify.configure(outputs);
 const amplifyClient = generateClient<Schema>();
@@ -38,18 +40,17 @@ const App: React.FC<AppProps> = () => {
   useEffect(() => {
     const checkAuthentication = async (): Promise<void> => {
       try {
-        const response = await axios.get<AuthResponse>(
-          `${baseUrl}/auth/is-authenticated/`,
-          { withCredentials: true }
-        );
+        const response = await apiClient.post('/auth/is-authenticated/', {});
         
         console.log(response);
         if (response.data.is_authenticated) {
           console.log('User authenticated');
         } else {
+          console.log('Login expired. Please log in again.');
           window.location.href = `${baseUrl}/auth/login`;
         }
       } catch (error) {
+        window.alert('Login required. Please log in again.');
         window.location.href = `${baseUrl}/auth/login`;
       }
     };
