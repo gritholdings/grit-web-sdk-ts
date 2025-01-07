@@ -14,21 +14,16 @@ import { cn } from '@/app/components/base/utils/utils';
 
 import { CheckCirclFillIcon, ChevronDownIcon } from './icons';
 
-interface ModelSelectorProps extends React.ComponentProps<typeof Button> {
-  selectedModelId: string;
-  /**
-   * Called when the user selects a new model from the menu.
-   * You can use this in the parent to update selectedModelId.
-   */
-  onChange: (modelId: string) => void;
-}
-
 export function ModelSelector({
   selectedModelId,
-  onChange,
+  onModelSelect,
   className,
   ...buttonProps
-}: ModelSelectorProps) {
+}: {
+  selectedModelId: string;
+  onModelSelect: (modelId: string) => void;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
 
   // which model is currently "selected" according to the parent
@@ -61,7 +56,7 @@ export function ModelSelector({
                 setOpen(false);
                 startTransition(() => {
                   // Let the parent update the "selectedModelId"
-                  onChange(model.id);
+                  onModelSelect(model.id);
                   // Optionally persist anywhere you like
                   saveModelId(model.id);
                 });

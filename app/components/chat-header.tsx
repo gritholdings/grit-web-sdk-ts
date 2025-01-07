@@ -44,7 +44,7 @@ export function ChatHeader({
       )}
       <ModelSelector
         selectedModelId={selectedModelId}
-        onChange={(newModelId) => {
+        onModelSelect={(newModelId) => {
           setSelectedModelId(newModelId);
         }}
         className="order-1 md:order-2"
