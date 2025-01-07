@@ -37,6 +37,8 @@ const App: React.FC<AppProps> = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const baseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
 
+  const [selectedModelId, setSelectedModelId] = useState('gpt-4o');
+
   useEffect(() => {
     const checkAuthentication = async (): Promise<void> => {
       try {
@@ -97,7 +99,7 @@ const App: React.FC<AppProps> = () => {
       <div className="flex h-screen w-full">
         {/* Sidebar */}
         <AppSidebar />
-        <Chat id={''} initialMessages={[]} selectedModelId={''} />
+        <Chat id={''} initialMessages={[]} selectedModelId={selectedModelId} setSelectedModelId={setSelectedModelId}/>
       </div>
     </SidebarProvider>
   );

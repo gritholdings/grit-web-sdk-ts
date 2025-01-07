@@ -3,7 +3,7 @@
 import { Attachment, Message } from '@/app/components/base/chat-api';
 import { useChat } from '@/app/components/base/ai-react';
 import { AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { Dispatch, useState, SetStateAction } from 'react';
 import { useWindowSize } from 'usehooks-ts';
 
 import { ChatHeader } from './chat-header';
@@ -20,10 +20,12 @@ export function Chat({
   id,
   initialMessages,
   selectedModelId,
+  setSelectedModelId
 }: {
   id: string;
   initialMessages: Array<Message>;
   selectedModelId: string;
+  setSelectedModelId: Dispatch<SetStateAction<string>>;
 }) {
 
   const {
@@ -71,7 +73,10 @@ export function Chat({
   return (
     <>
       <div className="flex flex-col min-w-0 h-dvh bg-background w-full">
-        <ChatHeader />
+        <ChatHeader
+          selectedModelId={selectedModelId}
+          setSelectedModelId={setSelectedModelId}
+        />
         <div
           ref={messagesContainerRef}
           className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
@@ -140,7 +145,6 @@ export function Chat({
           />
         )}
       </AnimatePresence>
-      {/* <BlockStreamHandler streamingData={streamingData} setBlock={setBlock} /> */}
     </>
   );
 }
