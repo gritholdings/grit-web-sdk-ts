@@ -1,18 +1,17 @@
 'use client';
 
-import { startTransition, useMemo, useState } from 'react';
+import { startTransition, useMemo, useState, useEffect } from 'react';
 
-import { models, saveModelId } from '@/app/components/base/models';
 import { Button } from '@/app/components/shadcn/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/app/components/shadcn/ui/dropdown-menu';
 import { cn } from '@/app/components/base/utils/utils';
-
 import { CheckCirclFillIcon, ChevronDownIcon } from './icons';
+import apiClient from '@/app/components/base/api-client';
 
 export function ModelSelector({
   selectedModelId,
@@ -25,12 +24,28 @@ export function ModelSelector({
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [models, setModels] = useState<Array<any>>([]);
 
   // which model is currently "selected" according to the parent
   const selectedModel = useMemo(
     () => models.find((m) => m.id === selectedModelId),
     [selectedModelId]
   );
+  useEffect(() => {
+    async function fetchModels() {
+      try {
+        const response = await apiClient.post(`/api/models`, {});
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch models');
+        }
+        setModels(response.data['models']);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchModels();
+  }, []);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -46,7 +61,7 @@ export function ModelSelector({
           <ChevronDownIcon />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="min-w-[300px]">
+      <DropdownMenuContent align="start" className="min-w-[300px] bg-white">
         {models.map((model) => {
           const isActive = model.id === selectedModelId;
           return (
@@ -57,8 +72,6 @@ export function ModelSelector({
                 startTransition(() => {
                   // Let the parent update the "selectedModelId"
                   onModelSelect(model.id);
-                  // Optionally persist anywhere you like
-                  saveModelId(model.id);
                 });
               }}
               className="gap-4 flex flex-row justify-between items-center"
