@@ -152,6 +152,7 @@ export function Chat({
     data: streamingData,
   } = useChat({
     chatId: id,
+    modelId: selectedModelId,
     body: { id, modelId: selectedModelId },
     initialMessages
   });
