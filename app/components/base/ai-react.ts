@@ -9,6 +9,7 @@ interface UseChatOptions {
   body?: Record<string, any>;
   onFinish?: () => void;
   chatId: string;
+  modelId: string;
 }
 
 export const createThread = async (): Promise<string> => {
@@ -25,7 +26,7 @@ export const createThread = async (): Promise<string> => {
 };
 
 
-export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOptions) {
+export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: UseChatOptions) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -61,12 +62,12 @@ export function useChat({ initialMessages = [], body = {}, onFinish }: UseChatOp
         id: Date.now().toString(),
         role: message.role || 'user'
       }]);
-      
       const response = await apiClient.post(`/api/threads/runs`, {
         message: message.content,
         thread_id: threadId,
         content: message.content,
         chat_id: body.id,
+        model_id: modelId,
         attachments: message.attachments
       });
 

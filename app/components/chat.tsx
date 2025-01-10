@@ -42,6 +42,7 @@ export function Chat({
     setCurrentThreadId,
   } = useChat({
     chatId: id,
+    modelId: selectedModelId,
     initialMessages,
     onFinish: () => {
       // mutate('/api/history');

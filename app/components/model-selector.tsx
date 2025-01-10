@@ -38,7 +38,14 @@ export function ModelSelector({
         if (response.status !== 200) {
           throw new Error('Failed to fetch models');
         }
-        setModels(response.data['models']);
+        const fetchedModels = response.data.models;
+        setModels(fetchedModels);
+
+        // If no model is yet selected (or you want to force selection),
+        // set the parent to the first model
+        if (fetchedModels.length > 0 && !selectedModelId) {
+          onModelSelect(fetchedModels[0].id);
+        }
       } catch (error) {
         console.error(error);
       }
