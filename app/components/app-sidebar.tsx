@@ -49,6 +49,7 @@ export function AppSidebar({ }: { }) {
                   setOpenMobile(false);
                   router.push('/');
                   router.refresh();
+                  window.location.href = '/';
                 }}
               >
                 <PlusIcon />

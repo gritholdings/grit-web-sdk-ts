@@ -35,6 +35,7 @@ export function ChatHeader({
             onClick={() => {
               router.push('/');
               router.refresh();
+              window.location.href = '/';
             }}
           >
             <PlusIcon />
