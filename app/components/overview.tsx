@@ -1,4 +1,5 @@
 import React from 'react';
+import { Labels } from '@/agent-app/labels';
 
 interface OverviewProps {
   className?: string;
@@ -21,14 +22,7 @@ export const Overview: React.FC<OverviewProps> = ({ className }) => {
       `}
     >
       <p>
-        Welcome to{' '}
-        <span className="font-semibold">
-          Your Product Name
-        </span>{' '}
-        . I’m here to help you with whatever you need—whether it's answering questions, resolving issues, or guiding you through solutions.
-      </p>
-      <p>
-        Let’s get started! What can I help you with today?
+        {Labels.OVERVIEW_TEXT}
       </p>
     </div>
   );
