@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect, useCallback } from 'react';
 import { Message, CreateMessage } from '@/app/components/base/chat-api';
 
-import apiClient from '@/app/components/base/api-client';
+import { apiClient } from '@/app/components/base/api-client';
 
 interface UseChatOptions {
   initialMessages?: Message[];

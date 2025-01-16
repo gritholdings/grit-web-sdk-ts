@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-import apiClient from '@/app/components/base/api-client';
+import { apiClient } from '@/app/components/base/api-client';
 
 // Type definitions
 interface Attachment {

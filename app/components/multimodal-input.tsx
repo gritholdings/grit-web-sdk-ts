@@ -23,7 +23,7 @@ import { PreviewAttachment } from './preview-attachment';
 import { Button } from '@/app/components/shadcn/ui/button';
 import { Textarea } from '@/app/components/shadcn/ui/textarea';
 
-import apiClient from '@/app/components/base/api-client';
+import { apiClient } from '@/app/components/base/api-client';
 import { set } from 'date-fns';
 
 const suggestedActions = [
