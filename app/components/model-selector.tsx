@@ -11,7 +11,7 @@ import {
 } from '@/app/components/shadcn/ui/dropdown-menu';
 import { cn } from '@/app/components/base/utils/utils';
 import { CheckCirclFillIcon, ChevronDownIcon } from './icons';
-import apiClient from '@/app/components/base/api-client';
+import { apiClient } from '@/app/components/base/api-client';
 
 export function ModelSelector({
   selectedModelId,

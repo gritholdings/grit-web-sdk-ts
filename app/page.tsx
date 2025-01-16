@@ -13,8 +13,9 @@ import { SidebarProvider } from "@/app/components/shadcn/ui/sidebar";
 import { AppSidebar } from "@/app/components/app-sidebar";
 import { Send } from "lucide-react";
 import { Chat } from "@/app/components/chat";
+import { type User } from '@/app/auth/user';
 
-import apiClient from '@/app/components/base/api-client';
+import { apiClient, baseUrl } from '@/app/components/base/api-client';
 
 // Configure Amplify once
 Amplify.configure(outputs);
@@ -35,9 +36,9 @@ const App: React.FC<AppProps> = () => {
   const [message, setMessage] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const baseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
 
   const [selectedModelId, setSelectedModelId] = useState('');
+  const [user, setUser] = useState<User>({id: '', email: ''});
 
   useEffect(() => {
     const checkAuthentication = async (): Promise<void> => {
@@ -46,7 +47,7 @@ const App: React.FC<AppProps> = () => {
         
         console.log(response);
         if (response.data.is_authenticated) {
-          console.log('User authenticated');
+          setUser({id: response.data.user_id, email: response.data.email});
         } else {
           window.alert('Login expired. Please log in again.');
           window.location.href = `${baseUrl}/auth/login`;
@@ -98,7 +99,7 @@ const App: React.FC<AppProps> = () => {
     <SidebarProvider>
       <div className="flex h-screen w-full">
         {/* Sidebar */}
-        <AppSidebar />
+        <AppSidebar user={user} />
         <Chat id={''} initialMessages={[]} selectedModelId={selectedModelId} setSelectedModelId={setSelectedModelId}/>
       </div>
     </SidebarProvider>
