@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect, useCallback } from 'react';
 import { Message, CreateMessage } from '@/app/components/base/chat-api';
 
-import { apiClient } from '@/app/components/base/api-client';
+import { apiClient, baseUrl, getCookie } from '@/app/components/base/api-client';
 
 interface UseChatOptions {
   initialMessages?: Message[];
@@ -55,31 +55,74 @@ export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: 
         setCurrentThreadId(threadId);
       }
 
-
       // Add user message
       setMessages(prevMessages => [...prevMessages, { 
         ...message, 
         id: Date.now().toString(),
         role: message.role || 'user'
       }]);
-      const response = await apiClient.post(`/api/threads/runs`, {
-        message: message.content,
-        thread_id: threadId,
-        content: message.content,
-        chat_id: body.id,
-        model_id: modelId,
-        attachments: message.attachments
+
+      const response = await fetch(baseUrl + "/api/threads/runs", {
+        method: "POST",
+        credentials: "include",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken") || ""
+        }),
+        body: JSON.stringify({
+          message: message.content,
+          thread_id: threadId,
+          content: message.content,
+          chat_id: body.id,
+          model_id: modelId,
+          attachments: message.attachments
+        })
       });
 
+      // const response = await apiClient.post(`/api/threads/runs`, {
+      //   message: message.content,
+      //   thread_id: threadId,
+      //   content: message.content,
+      //   chat_id: body.id,
+      //   model_id: modelId,
+      //   attachments: message.attachments
+      // });
+
       // Format assistant message
+      const newAssistantMessageId = response.data?.id || Date.now().toString();
       const assistantMessage: Message = {
-        id: response.data.id || Date.now().toString(),
+        id: newAssistantMessageId,
         role: 'assistant',
-        content: response.data || ''  // Modify this line
+        content: ''
       };
 
-      // Update with assistant response using functional update
+      // Set an initial empty assistant response
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
+
+      // Read the streaming response using a ReadableStream reader
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+
+      let done = false;
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          // Decode the current chunk
+          const chunkValue = decoder.decode(value, { stream: true });
+          // Append it to the existing text
+          setMessages(prevMessages =>
+            prevMessages.map(message =>
+              message.id === newAssistantMessageId
+                ? { ...message, content: message.content + chunkValue }
+                : message
+            )
+          );
+        }
+      }
+
+      return;
       
       setStreamingData(response.data.streamingData);
       onFinish?.();

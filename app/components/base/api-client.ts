@@ -31,5 +31,6 @@ apiClient.interceptors.request.use(async (config) => {
 
 export {
   apiClient,
-  baseUrl
+  baseUrl,
+  getCookie
 }
