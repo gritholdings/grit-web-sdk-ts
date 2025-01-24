@@ -79,17 +79,8 @@ export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: 
         })
       });
 
-      // const response = await apiClient.post(`/api/threads/runs`, {
-      //   message: message.content,
-      //   thread_id: threadId,
-      //   content: message.content,
-      //   chat_id: body.id,
-      //   model_id: modelId,
-      //   attachments: message.attachments
-      // });
-
       // Format assistant message
-      const newAssistantMessageId = response.data?.id || Date.now().toString();
+      const newAssistantMessageId = Date.now().toString();
       const assistantMessage: Message = {
         id: newAssistantMessageId,
         role: 'assistant',
@@ -100,14 +91,15 @@ export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: 
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
 
       // Read the streaming response using a ReadableStream reader
-      const reader = response.body.getReader();
+      const reader = response.body?.getReader();
       const decoder = new TextDecoder("utf-8");
 
       let done = false;
 
       while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
+        const result = await reader?.read();
+        const { value, done: readerDone } = result || {};
+        done = readerDone ?? true;
         if (value) {
           // Decode the current chunk
           const chunkValue = decoder.decode(value, { stream: true });
@@ -121,10 +113,8 @@ export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: 
           );
         }
       }
-
-      return;
       
-      setStreamingData(response.data.streamingData);
+      // setStreamingData(response.data.streamingData);
       onFinish?.();
       return assistantMessage.id;
 
