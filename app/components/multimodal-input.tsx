@@ -164,14 +164,15 @@ export function MultimodalInput({
         },
       });
 
-      const { url, file_name, content_type } = response.data;
+      // const { url, file_name, content_type } = response.data;
+      const url = '';
 
       return {
         url,
-        name: file_name,
-        contentType: content_type,
+        name: file.name,
+        contentType: '',
         type: 'file',
-        content: file_name
+        content: file.name
       };
     } catch (error) {
       console.error('Error uploading file:', error);
