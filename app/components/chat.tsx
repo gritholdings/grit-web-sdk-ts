@@ -146,6 +146,7 @@ export function Chat({
             setMessages={setMessages}
             currentThreadId={currentThreadId}
             setCurrentThreadId={setCurrentThreadId}
+            suggestedMessages={suggestedMessages}
           />
         )}
       </AnimatePresence>

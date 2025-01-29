@@ -62,6 +62,7 @@ export function Block({
   // votes,
   currentThreadId,
   setCurrentThreadId,
+  suggestedMessages,
 }: {
   chatId: string;
   input: string;
@@ -87,6 +88,7 @@ export function Block({
   ) => void;
   currentThreadId: string;
   setCurrentThreadId: Dispatch<SetStateAction<string>>;
+  suggestedMessages: string[];
 }) {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
@@ -332,6 +334,7 @@ export function Block({
                 setMessages={setMessages}
                 currentThreadId={currentThreadId}
                 setCurrentThreadId={setCurrentThreadId}
+                suggestedMessages={suggestedMessages}
               />
             </form>
           </div>
