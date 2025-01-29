@@ -16,11 +16,13 @@ import { apiClient } from '@/app/components/base/api-client';
 export function ModelSelector({
   selectedModelId,
   onModelSelect,
+  setSuggestedMessages,
   className,
   ...buttonProps
 }: {
   selectedModelId: string;
   onModelSelect: (modelId: string) => void;
+  setSuggestedMessages: (messages: Array<string>) => void;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -45,6 +47,7 @@ export function ModelSelector({
         // set the parent to the first model
         if (fetchedModels.length > 0 && !selectedModelId) {
           onModelSelect(fetchedModels[0].id);
+          setSuggestedMessages(fetchedModels[0].suggested_messages);
         }
       } catch (error) {
         console.error(error);
@@ -79,6 +82,7 @@ export function ModelSelector({
                 startTransition(() => {
                   // Let the parent update the "selectedModelId"
                   onModelSelect(model.id);
+                  setSuggestedMessages(model.suggested_messages);
                 });
               }}
               className="gap-4 flex flex-row justify-between items-center"

@@ -14,10 +14,13 @@ import { PlusIcon, VercelIcon } from './icons';
 import { useSidebar } from '@/app/components/shadcn/ui/sidebar';
 
 export function ChatHeader({
-    selectedModelId, setSelectedModelId
+    selectedModelId,
+    setSelectedModelId,
+    setSuggestedMessages,
   }: {
     selectedModelId: string;
     setSelectedModelId: Dispatch<SetStateAction<string>>;
+    setSuggestedMessages: Dispatch<SetStateAction<Array<string>>>;
   }) {
   const router = useRouter();
   const { open } = useSidebar();
@@ -48,6 +51,7 @@ export function ChatHeader({
         onModelSelect={(newModelId) => {
           setSelectedModelId(newModelId);
         }}
+        setSuggestedMessages={setSuggestedMessages}
         className="order-1 md:order-2"
       />
     </header>

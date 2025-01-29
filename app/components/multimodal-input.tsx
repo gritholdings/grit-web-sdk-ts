@@ -26,18 +26,6 @@ import { Textarea } from '@/app/components/shadcn/ui/textarea';
 import { apiClient } from '@/app/components/base/api-client';
 import { set } from 'date-fns';
 
-const suggestedActions = [
-  {
-    title: 'What is the X',
-    label: 'in Y?',
-    action: 'What is the X in Y?',
-  },
-  {
-    title: 'Help me draft an A',
-    label: 'about B',
-    action: 'Help me draft an A about B',
-  },
-];
 
 export function MultimodalInput({
   chatId,
@@ -54,6 +42,7 @@ export function MultimodalInput({
   className,
   currentThreadId,
   setCurrentThreadId,
+  suggestedMessages
 }: {
   chatId: string;
   input: string;
@@ -77,6 +66,7 @@ export function MultimodalInput({
   className?: string;
   currentThreadId: string;
   setCurrentThreadId: (id: string) => void;
+  suggestedMessages: Array<string>;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
@@ -211,7 +201,7 @@ export function MultimodalInput({
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <div className="grid sm:grid-cols-2 gap-2 w-full">
-            {suggestedActions.map((suggestedAction, index) => (
+            {suggestedMessages.map((suggestedMessage, index) => (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -227,15 +217,15 @@ export function MultimodalInput({
                     // window.history.replaceState({}, '', `/chat/${chatId}`);
                     append({
                       role: 'user',
-                      content: suggestedAction.action,
+                      content: suggestedMessage,
                     });
                   }}
-                  className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
-                >
-                  <span className="font-medium">{suggestedAction.title}</span>
-                  <span className="text-muted-foreground">
+                  className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1
+                    sm:flex-col w-full h-auto justify-start items-start overflow-hidden">
+                  <span className="font-medium">{suggestedMessage}</span>
+                  {/* <span className="text-muted-foreground">
                     {suggestedAction.label}
-                  </span>
+                  </span> */}
                 </Button>
               </motion.div>
             ))}

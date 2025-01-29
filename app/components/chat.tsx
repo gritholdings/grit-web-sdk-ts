@@ -70,6 +70,7 @@ export function Chat({
     useScrollToBottom<HTMLDivElement>();
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+  const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
 
   return (
     <>
@@ -77,6 +78,7 @@ export function Chat({
         <ChatHeader
           selectedModelId={selectedModelId}
           setSelectedModelId={setSelectedModelId}
+          setSuggestedMessages={setSuggestedMessages}
         />
         <div
           ref={messagesContainerRef}
@@ -121,6 +123,7 @@ export function Chat({
             append={append}
             currentThreadId={currentThreadId}
             setCurrentThreadId={setCurrentThreadId}
+            suggestedMessages={suggestedMessages}
           />
         </form>
       </div>
