@@ -25,21 +25,21 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     },
     ol: ({ node, children, ...props }: any) => {
       return (
-        <ol className="list-decimal list-outside ml-4" {...props}>
+        <ol className="list-decimal ml-4 border-0 divide-y-0 gap-0 bg-transparent pl-4" {...props}>
           {children}
         </ol>
       );
     },
     li: ({ node, children, ...props }: any) => {
       return (
-        <li className="py-1" {...props}>
+        <li className="py-1 hover:bg-transparent" {...props}>
           {children}
         </li>
       );
     },
     ul: ({ node, children, ...props }: any) => {
       return (
-        <ul className="list-decimal list-outside ml-4" {...props}>
+        <ul className="list-disc ml-4 border-0 divide-y-0 gap-0 bg-transparent pl-4" {...props}>
           {children}
         </ul>
       );
