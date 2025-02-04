@@ -4,56 +4,29 @@ import { Message, CreateMessage } from '@/app/components/base/chat-api';
 
 import { apiClient, baseUrl, getCookie } from '@/app/components/base/api-client';
 
-interface UseChatOptions {
+
+export function useChat({
+  initialMessages = [],
+  body = {},
+  onFinish,
+  modelId,
+  ensureThreadExists
+}: {
   initialMessages?: Message[];
   body?: Record<string, any>;
   onFinish?: () => void;
-  chatId: string;
   modelId: string;
-}
-
-export const createThread = async (): Promise<string> => {
-  try {
-    const response = await apiClient.post('/api/threads/create');
-    if (response.status !== 201) {
-      throw new Error('Failed to create thread');
-    }
-    return response.data.thread_id;
-  } catch (error) {
-    console.error('Error creating thread:', error);
-    throw new Error('Failed to create thread');
-  }
-};
-
-
-export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: UseChatOptions) {
+  ensureThreadExists: () => Promise<string>;
+}) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [streamingData, setStreamingData] = useState<any>(null);
-  const [currentThreadId, setCurrentThreadId] = useState('');
-
-  // Initialize thread on component mount if there are initial messages
-  useEffect(() => {
-    const initializeThread = async () => {
-      if (initialMessages.length > 0 && !currentThreadId) {
-        const newThreadId = await createThread();
-        setCurrentThreadId(newThreadId);
-      }
-    };
-    
-    initializeThread();
-  }, [initialMessages.length, currentThreadId]);
 
   const append = useCallback(async (message: CreateMessage) => {
     try {
       setIsLoading(true);
-
-      let threadId = currentThreadId;
-      if (!threadId) {
-        threadId = await createThread();
-        setCurrentThreadId(threadId);
-      }
+      let currentThreadId = await ensureThreadExists();
 
       // Add user message
       setMessages(prevMessages => [...prevMessages, { 
@@ -71,7 +44,7 @@ export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: 
         }),
         body: JSON.stringify({
           message: message.content,
-          thread_id: threadId,
+          thread_id: currentThreadId,
           content: message.content,
           chat_id: body.id,
           model_id: modelId,
@@ -158,35 +131,6 @@ export function useChat({ initialMessages = [], body = {}, onFinish, modelId }: 
     append,
     isLoading,
     stop,
-    data: streamingData,
-    currentThreadId,
-    setCurrentThreadId
+    data: streamingData
   };
-}
-
-export function Chat({
-  id,
-  initialMessages,
-  selectedModelId,
-}: {
-  id: string;
-  initialMessages: Array<Message>;
-  selectedModelId: string;
-}) {
-  const {
-    messages,
-    setMessages,
-    handleSubmit,
-    input,
-    setInput,  
-    append,
-    isLoading,
-    stop,
-    data: streamingData,
-  } = useChat({
-    chatId: id,
-    modelId: selectedModelId,
-    body: { id, modelId: selectedModelId },
-    initialMessages
-  });
 }

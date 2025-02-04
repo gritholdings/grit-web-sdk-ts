@@ -3,7 +3,7 @@
 import { Attachment, Message } from '@/app/components/base/chat-api';
 import { useChat } from '@/app/components/base/ai-react';
 import { AnimatePresence } from 'framer-motion';
-import { Dispatch, useState, SetStateAction } from 'react';
+import { Dispatch, useState, SetStateAction, useRef } from 'react';
 import { useWindowSize } from 'usehooks-ts';
 
 import { ChatHeader } from './chat-header';
@@ -15,6 +15,8 @@ import { Block, UIBlock } from './block';
 // import { BlockStreamHandler } from './block-stream-handler';
 import { MultimodalInput } from './multimodal-input';
 import { Overview } from './overview';
+
+import { apiClient } from '@/app/components/base/api-client';
 
 export function Chat({
   id,
@@ -28,6 +30,29 @@ export function Chat({
   setSelectedModelId: Dispatch<SetStateAction<string>>;
 }) {
 
+  const threadIdRef = useRef('');
+
+  const createThread = async (): Promise<string> => {
+    try {
+      const response = await apiClient.post('/api/threads/create');
+      if (response.status !== 201) {
+        throw new Error('Failed to create thread');
+      }
+      return response.data.thread_id;
+    } catch (error) {
+      console.error('Error creating thread:', error);
+      throw new Error('Failed to create thread');
+    }
+  };
+
+  const ensureThreadExists = async () => {
+    if (threadIdRef.current === '') {
+      const newThreadId = await createThread();
+      threadIdRef.current = newThreadId;
+    }
+    return threadIdRef.current;
+  };
+
   const {
     messages,
     setMessages,
@@ -37,16 +62,14 @@ export function Chat({
     append,
     isLoading,
     stop,
-    data: streamingData,
-    currentThreadId,
-    setCurrentThreadId,
+    data: streamingData
   } = useChat({
-    chatId: id,
     modelId: selectedModelId,
     initialMessages,
     onFinish: () => {
       // mutate('/api/history');
     },
+    ensureThreadExists
   });
 
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
@@ -121,9 +144,8 @@ export function Chat({
             messages={messages}
             setMessages={setMessages}
             append={append}
-            currentThreadId={currentThreadId}
-            setCurrentThreadId={setCurrentThreadId}
             suggestedMessages={suggestedMessages}
+            ensureThreadExists={ensureThreadExists}
           />
         </form>
       </div>
@@ -144,9 +166,8 @@ export function Chat({
             setBlock={setBlock}
             messages={messages}
             setMessages={setMessages}
-            currentThreadId={currentThreadId}
-            setCurrentThreadId={setCurrentThreadId}
             suggestedMessages={suggestedMessages}
+            ensureThreadExists={ensureThreadExists}
           />
         )}
       </AnimatePresence>

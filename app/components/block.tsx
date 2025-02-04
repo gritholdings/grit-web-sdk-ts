@@ -60,9 +60,8 @@ export function Block({
   messages,
   setMessages,
   // votes,
-  currentThreadId,
-  setCurrentThreadId,
   suggestedMessages,
+  ensureThreadExists
 }: {
   chatId: string;
   input: string;
@@ -86,9 +85,8 @@ export function Block({
     },
     chatRequestOptions?: ChatRequestOptions
   ) => void;
-  currentThreadId: string;
-  setCurrentThreadId: Dispatch<SetStateAction<string>>;
   suggestedMessages: string[];
+  ensureThreadExists: () => Promise<string>;
 }) {
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
@@ -332,9 +330,8 @@ export function Block({
                 append={append}
                 className="bg-background dark:bg-muted"
                 setMessages={setMessages}
-                currentThreadId={currentThreadId}
-                setCurrentThreadId={setCurrentThreadId}
                 suggestedMessages={suggestedMessages}
+                ensureThreadExists={ensureThreadExists}
               />
             </form>
           </div>

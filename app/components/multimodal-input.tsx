@@ -1,6 +1,5 @@
 'use client';
 
-import { createThread } from '@/app/components/base/ai-react';
 import { Attachment, ChatRequestOptions, CreateMessage, Message } from '@/app/components/base/chat-api';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
@@ -40,9 +39,8 @@ export function MultimodalInput({
   append,
   handleSubmit,
   className,
-  currentThreadId,
-  setCurrentThreadId,
-  suggestedMessages
+  suggestedMessages,
+  ensureThreadExists
 }: {
   chatId: string;
   input: string;
@@ -64,13 +62,11 @@ export function MultimodalInput({
     chatRequestOptions?: ChatRequestOptions
   ) => void;
   className?: string;
-  currentThreadId: string;
-  setCurrentThreadId: (id: string) => void;
   suggestedMessages: Array<string>;
+  ensureThreadExists: () => Promise<string>;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
-  const [threadId, setThreadId] = useState<string | null>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -138,14 +134,10 @@ export function MultimodalInput({
   ]);
 
   const uploadFile = async (file: File) => {
-    let threadId = currentThreadId;
-    if (!threadId) {
-      threadId = await createThread();
-      setCurrentThreadId(threadId);
-    }
+    let currentThreadId = await ensureThreadExists();
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('thread_id', threadId);
+    formData.append('thread_id', currentThreadId);
 
     try {
       const response = await apiClient.post(`/api/files/upload`, formData, {
