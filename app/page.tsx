@@ -100,7 +100,7 @@ const App: React.FC<AppProps> = () => {
       <div className="flex h-screen w-full">
         {/* Sidebar */}
         <AppSidebar user={user} />
-        <Chat id={''} initialMessages={[]} selectedModelId={selectedModelId} setSelectedModelId={setSelectedModelId}/>
+        <Chat id='' initialMessages={[]} />
       </div>
     </SidebarProvider>
   );

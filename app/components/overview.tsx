@@ -1,11 +1,12 @@
-import React from 'react';
 import { Labels } from '@/agent-app/labels';
 
-interface OverviewProps {
+export function Overview({
+  className,
+  overviewHtml
+}: {
   className?: string;
-}
-
-export const Overview: React.FC<OverviewProps> = ({ className }) => {
+  overviewHtml: string;
+}) {
   return (
     <div 
       className={`
@@ -21,9 +22,11 @@ export const Overview: React.FC<OverviewProps> = ({ className }) => {
         ${className || ''}
       `}
     >
-      <p>
-        {Labels.OVERVIEW_TEXT}
-      </p>
+      {overviewHtml ? (
+        <div dangerouslySetInnerHTML={{ __html: overviewHtml }} />
+      ) : (
+        <p>{overviewHtml}</p>
+      )}
     </div>
   );
-};
+}

@@ -12,27 +12,28 @@ import {
 import { cn } from '@/app/components/base/utils/utils';
 import { CheckCirclFillIcon, ChevronDownIcon } from './icons';
 import { apiClient } from '@/app/components/base/api-client';
+import { ModelOptions } from './chat';
 
 export function ModelSelector({
-  selectedModelId,
-  onModelSelect,
-  setSuggestedMessages,
+  setSelectedModelOptions,
   className,
   ...buttonProps
 }: {
-  selectedModelId: string;
-  onModelSelect: (modelId: string) => void;
-  setSuggestedMessages: (messages: Array<string>) => void;
+  setSelectedModelOptions: (options: ModelOptions) => void;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [models, setModels] = useState<Array<any>>([]);
+  const [selectedModelId, setSelectedModelId] = useState<string | null>(null);
 
-  // which model is currently "selected" according to the parent
-  const selectedModel = useMemo(
-    () => models.find((m) => m.id === selectedModelId),
-    [selectedModelId]
-  );
+  // Determine the selected model; fallback to first option if none selected.
+  const selectedModel = useMemo(() => {
+    if (selectedModelId) {
+      return models.find((m) => m.id === selectedModelId);
+    }
+    return models[0];
+  }, [models, selectedModelId]);
+
   useEffect(() => {
     async function fetchModels() {
       try {
@@ -46,8 +47,12 @@ export function ModelSelector({
         // If no model is yet selected (or you want to force selection),
         // set the parent to the first model
         if (fetchedModels.length > 0 && !selectedModelId) {
-          onModelSelect(fetchedModels[0].id);
-          setSuggestedMessages(fetchedModels[0].suggested_messages);
+          setSelectedModelId(fetchedModels[0].id);
+          setSelectedModelOptions({
+            modelId: fetchedModels[0].id,
+            suggestedMessages: fetchedModels[0].suggested_messages,
+            overviewHtml: fetchedModels[0].overview_html
+          });
         }
       } catch (error) {
         console.error(error);
@@ -80,9 +85,12 @@ export function ModelSelector({
               onSelect={() => {
                 setOpen(false);
                 startTransition(() => {
-                  // Let the parent update the "selectedModelId"
-                  onModelSelect(model.id);
-                  setSuggestedMessages(model.suggested_messages);
+                  setSelectedModelId(model.id);
+                  setSelectedModelOptions({
+                    modelId: model.id,
+                    suggestedMessages: model.suggested_messages,
+                    overviewHtml: model.overview_html
+                  });
                 });
               }}
               className="gap-4 flex flex-row justify-between items-center"

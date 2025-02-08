@@ -18,16 +18,18 @@ import { Overview } from './overview';
 
 import { apiClient } from '@/app/components/base/api-client';
 
+export interface ModelOptions {
+  modelId: string;
+  suggestedMessages: Array<string>;
+  overviewHtml: string;
+}
+
 export function Chat({
   id,
   initialMessages,
-  selectedModelId,
-  setSelectedModelId
 }: {
   id: string;
   initialMessages: Array<Message>;
-  selectedModelId: string;
-  setSelectedModelId: Dispatch<SetStateAction<string>>;
 }) {
 
   const threadIdRef = useRef('');
@@ -53,25 +55,6 @@ export function Chat({
     return threadIdRef.current;
   };
 
-  const {
-    messages,
-    setMessages,
-    handleSubmit,
-    input,
-    setInput,
-    append,
-    isLoading,
-    stop,
-    data: streamingData
-  } = useChat({
-    modelId: selectedModelId,
-    initialMessages,
-    onFinish: () => {
-      // mutate('/api/history');
-    },
-    ensureThreadExists
-  });
-
   const { width: windowWidth = 1920, height: windowHeight = 1080 } =
     useWindowSize();
 
@@ -93,21 +76,46 @@ export function Chat({
     useScrollToBottom<HTMLDivElement>();
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
-  const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
+  const [selectedModelOptions, setSelectedModelOptions] = useState<ModelOptions>({
+    modelId: '',
+    suggestedMessages: [],
+    overviewHtml: '',
+  });
+
+  const {
+    messages,
+    setMessages,
+    handleSubmit,
+    input,
+    setInput,
+    append,
+    isLoading,
+    stop,
+    data: streamingData
+  } = useChat({
+    modelId: selectedModelOptions.modelId,
+    initialMessages,
+    onFinish: () => {
+      // mutate('/api/history');
+    },
+    ensureThreadExists
+  });
 
   return (
     <>
       <div className="flex flex-col min-w-0 h-dvh bg-background w-full">
         <ChatHeader
-          selectedModelId={selectedModelId}
-          setSelectedModelId={setSelectedModelId}
-          setSuggestedMessages={setSuggestedMessages}
+          setSelectedModelOptions={setSelectedModelOptions}
         />
         <div
           ref={messagesContainerRef}
           className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4"
         >
-          {messages.length === 0 && <Overview />}
+          {messages.length === 0 &&
+            <Overview
+              overviewHtml={selectedModelOptions.overviewHtml}
+            />
+          }
 
           {messages.map((message, index) => (
             <PreviewMessage
@@ -144,7 +152,7 @@ export function Chat({
             messages={messages}
             setMessages={setMessages}
             append={append}
-            suggestedMessages={suggestedMessages}
+            suggestedMessages={selectedModelOptions.suggestedMessages}
             ensureThreadExists={ensureThreadExists}
           />
         </form>
@@ -166,7 +174,7 @@ export function Chat({
             setBlock={setBlock}
             messages={messages}
             setMessages={setMessages}
-            suggestedMessages={suggestedMessages}
+            suggestedMessages={selectedModelOptions.suggestedMessages}
             ensureThreadExists={ensureThreadExists}
           />
         )}

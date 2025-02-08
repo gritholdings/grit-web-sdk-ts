@@ -12,15 +12,12 @@ import { BetterTooltip } from '@/app/components/shadcn/ui/tooltip';
 
 import { PlusIcon, VercelIcon } from './icons';
 import { useSidebar } from '@/app/components/shadcn/ui/sidebar';
+import { ModelOptions } from './chat';
 
 export function ChatHeader({
-    selectedModelId,
-    setSelectedModelId,
-    setSuggestedMessages,
+    setSelectedModelOptions
   }: {
-    selectedModelId: string;
-    setSelectedModelId: Dispatch<SetStateAction<string>>;
-    setSuggestedMessages: Dispatch<SetStateAction<Array<string>>>;
+    setSelectedModelOptions: Dispatch<SetStateAction<ModelOptions>>;
   }) {
   const router = useRouter();
   const { open } = useSidebar();
@@ -47,11 +44,7 @@ export function ChatHeader({
         </BetterTooltip>
       )}
       <ModelSelector
-        selectedModelId={selectedModelId}
-        onModelSelect={(newModelId) => {
-          setSelectedModelId(newModelId);
-        }}
-        setSuggestedMessages={setSuggestedMessages}
+        setSelectedModelOptions={setSelectedModelOptions}
         className="order-1 md:order-2"
       />
     </header>
