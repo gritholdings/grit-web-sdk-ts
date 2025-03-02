@@ -39,7 +39,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     },
     ul: ({ node, children, ...props }: any) => {
       return (
-        <ul className="list-disc ml-4 border-0 divide-y-0 gap-0 bg-transparent pl-4" {...props}>
+        <ul className="list-disc list-inside ml-4 border-0 divide-y-0 gap-0 bg-transparent pl-4" {...props}>
           {children}
         </ul>
       );
