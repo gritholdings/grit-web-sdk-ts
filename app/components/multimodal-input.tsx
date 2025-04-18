@@ -25,6 +25,8 @@ import { Textarea } from '@/app/components/shadcn/ui/textarea';
 import { apiClient } from '@/app/components/base/api-client';
 import { set } from 'date-fns';
 
+import { AppConfig } from '@/agent-app/configs';
+
 
 export function MultimodalInput({
   chatId,
@@ -146,7 +148,6 @@ export function MultimodalInput({
         },
       });
 
-      // const { url, file_name, content_type } = response.data;
       const url = '';
 
       return {
@@ -165,6 +166,25 @@ export function MultimodalInput({
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(event.target.files || []);
+
+      // Filter out files exceeding the size limit
+      const validFiles = files.filter((file) => {
+        const fileInMB = file.size / (1024 * 1024);
+        if (fileInMB > AppConfig.MAX_UPLOAD_SIZE_MB) {
+          alert(
+            `File ${file.name} exceeds the ${AppConfig.MAX_UPLOAD_SIZE_MB}MB size limit.`
+          );
+          return false;
+        }
+        return true;
+      });
+
+      // if a file is invalid, cancel the upload
+      if (validFiles.length !== files.length) {
+        // Reset the file input
+        setUploadQueue([]);
+        return;
+      }
 
       setUploadQueue(files.map((file) => file.name));
 

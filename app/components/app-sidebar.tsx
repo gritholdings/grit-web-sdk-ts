@@ -19,7 +19,7 @@ import {
   useSidebar,
 } from '@/app/components/shadcn/ui/sidebar';
 import { BetterTooltip } from '@/app/components/shadcn/ui/tooltip';
-import { Labels } from '@/agent-app/labels';
+import { AppConfig } from '@/agent-app/configs';
 
 export function AppSidebar({ user }: {user: User}) {
   const router = useRouter();
@@ -39,7 +39,7 @@ export function AppSidebar({ user }: {user: User}) {
               className="flex flex-row gap-3 items-center"
             >
               <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
-                {Labels.APP_NAME}
+                {AppConfig.APP_NAME}
               </span>
             </div>
             <BetterTooltip content="New Chat" align="start">
