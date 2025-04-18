@@ -1,5 +1,3 @@
-import { Labels } from '@/agent-app/labels';
-
 export function Overview({
   className,
   overviewHtml

@@ -19,14 +19,11 @@ brew install node
 npm install
 ```
 
-3. Get `amplify_outputs.json` from https://docs.amplify.aws/react/reference/amplify_outputs/. Put in base directory.
-```
-{
-    "auth": {},
-    "data": {},
-    "version": "1.1"
-}
-```
+3. Generate `amplify_outputs.json` using this command:
+   ```
+   npx ampx generate outputs --app-id YOUR_APP_ID --branch main
+   ```
+   Find YOUR_APP_ID from AWS console in Amplify -> Overview -> App ID
 
 4. Go to https://aws.amazon.com, AWS Amplify, select the app, go to Hosting -> Environment variables -> add new:
 ```
