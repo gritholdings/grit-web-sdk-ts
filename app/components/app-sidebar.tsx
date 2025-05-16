@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { type User } from '@/app/auth/user';
 
 import { PlusIcon } from '@/app/components/icons';
-// import { SidebarHistory } from '@/app/components/sidebar-history';
+import { SidebarHistory } from '@/app/components/sidebar-history';
 import { SidebarUserNav } from '@/app/components/sidebar-user-nav';
 import { Button } from '@/app/components/shadcn/ui/button';
 import {
@@ -61,7 +61,7 @@ export function AppSidebar({ user }: {user: User}) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {/* <SidebarHistory user={user} /> */}
+          <SidebarHistory user={user} />
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="gap-0">

@@ -45,7 +45,6 @@ const App: React.FC<AppProps> = () => {
       try {
         const response = await apiClient.post('/auth/is-authenticated/', {});
         
-        console.log(response);
         if (response.data.is_authenticated) {
           setUser({id: response.data.user_id, email: response.data.email});
         } else {

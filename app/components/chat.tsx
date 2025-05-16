@@ -3,7 +3,7 @@
 import { Attachment, Message } from '@/app/components/base/chat-api';
 import { useChat } from '@/app/components/base/ai-react';
 import { AnimatePresence } from 'framer-motion';
-import { Dispatch, useState, SetStateAction, useRef } from 'react';
+import { Dispatch, useState, SetStateAction, useRef, useEffect } from 'react';
 import { useWindowSize } from 'usehooks-ts';
 
 import { ChatHeader } from './chat-header';
@@ -31,8 +31,13 @@ export function Chat({
   id: string;
   initialMessages: Array<Message>;
 }) {
+  // Initialize threadIdRef with the passed-in id prop
+  const threadIdRef = useRef<string>(id);
 
-  const threadIdRef = useRef('');
+  // Update threadIdRef whenever the id prop changes
+  useEffect(() => {
+    threadIdRef.current = id;
+  }, [id]);
 
   const createThread = async (): Promise<string> => {
     try {
@@ -48,7 +53,8 @@ export function Chat({
   };
 
   const ensureThreadExists = async () => {
-    if (threadIdRef.current === '') {
+    // If no threadId is available, create one
+    if (!threadIdRef.current) {
       const newThreadId = await createThread();
       threadIdRef.current = newThreadId;
     }
@@ -91,14 +97,15 @@ export function Chat({
     append,
     isLoading,
     stop,
-    data: streamingData
+    data: streamingData,
   } = useChat({
     modelId: selectedModelOptions.modelId,
     initialMessages,
     onFinish: () => {
       // mutate('/api/history');
     },
-    ensureThreadExists
+    ensureThreadExists,
+    threadId: threadIdRef.current, // pass the thread ID to useChat
   });
 
   return (
