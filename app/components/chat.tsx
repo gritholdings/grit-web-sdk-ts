@@ -104,8 +104,7 @@ export function Chat({
     onFinish: () => {
       // mutate('/api/history');
     },
-    ensureThreadExists,
-    threadId: threadIdRef.current, // pass the thread ID to useChat
+    ensureThreadExists
   });
 
   return (

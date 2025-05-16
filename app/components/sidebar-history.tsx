@@ -60,7 +60,7 @@ const ThreadItem = ({
         <span>{thread.title}</span>
       </Link>
     </SidebarMenuButton>
-    <DropdownMenu modal>
+    {/* <DropdownMenu modal>
       <DropdownMenuTrigger asChild>
         <SidebarMenuAction
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground mr-0.5"
@@ -79,7 +79,7 @@ const ThreadItem = ({
           <span>Delete</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>
+    </DropdownMenu> */}
   </SidebarMenuItem>
 );
 
@@ -177,7 +177,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     );
   }
 
-  if (history.length === 0) {
+  if (threads.length === 0) {
     return (
       <SidebarGroup>
         <SidebarGroupContent>

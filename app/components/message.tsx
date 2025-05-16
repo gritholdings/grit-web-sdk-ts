@@ -53,7 +53,13 @@ export const PreviewMessage = ({
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
             <div className="flex flex-col gap-4">
-              <Markdown>{message.content as string}</Markdown>
+              {message.content.startsWith('data:image') ? (
+                <div className="ml-auto inline-block border border-dashed border-slate-300 text-center rounded-md px-12 py-4">
+                  File
+                </div>
+              ) : (
+                <Markdown>{message.content as string}</Markdown>
+              )}
             </div>
           )}
 
