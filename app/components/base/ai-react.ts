@@ -18,10 +18,14 @@ export function useChat({
   modelId: string;
   ensureThreadExists: () => Promise<string>;
 }) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [streamingData, setStreamingData] = useState<any>(null);
+
+  useEffect(() => {
+    setMessages(initialMessages);
+  }, [initialMessages]);
 
   const append = useCallback(async (message: CreateMessage) => {
     try {
