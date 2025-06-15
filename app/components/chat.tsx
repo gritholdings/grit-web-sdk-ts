@@ -41,7 +41,7 @@ export function Chat({
 
   const createThread = async (): Promise<string> => {
     try {
-      const response = await apiClient.post('/api/threads/create');
+      const response = await apiClient.post('/agent/api/threads/create');
       if (response.status !== 201) {
         throw new Error('Failed to create thread');
       }

@@ -37,7 +37,7 @@ export function ModelSelector({
   useEffect(() => {
     async function fetchModels() {
       try {
-        const response = await apiClient.post(`/api/models`, {});
+        const response = await apiClient.post(`/agent/api/models`, {});
         if (response.status !== 200) {
           throw new Error('Failed to fetch models');
         }

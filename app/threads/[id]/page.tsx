@@ -18,7 +18,7 @@ export default function ThreadPage() {
     async function loadMessages() {
       if (!id) return;
       try {
-        const response = await apiClient.post(`/api/threads/`, {
+        const response = await apiClient.post(`/agent/api/threads/`, {
           thread_id: id,
         });
         if (response.status === 401) {

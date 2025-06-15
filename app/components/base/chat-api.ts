@@ -42,7 +42,7 @@ const sendMessage = async (
 ): Promise<Message> => {
   // unused
   try {
-    const response = await apiClient.post(`/api/threads/runs`, {
+    const response = await apiClient.post(`/agent/api/threads/runs`, {
       message: message.content,
       content: message.content,
       chat_id: message.id, // Use id from message object which contains chatId

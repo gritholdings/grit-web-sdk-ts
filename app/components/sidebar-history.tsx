@@ -100,7 +100,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
         return;
       }
       setIsLoading(true);
-      const response = await apiClient.post('api/threads/list');
+      const response = await apiClient.post('/agent/api/threads/list');
       try {
         if (response.status !== 200) {
           setThreads([]);

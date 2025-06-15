@@ -39,7 +39,7 @@ export function useChat({
         role: message.role || 'user'
       }]);
 
-      const response = await fetch(baseUrl + "/api/threads/runs", {
+      const response = await fetch(baseUrl + "/agent/api/threads/runs", {
         method: "POST",
         credentials: "include",
         headers: new Headers({
