@@ -60,7 +60,7 @@ const ThreadItem = ({
         <span>{thread.title}</span>
       </Link>
     </SidebarMenuButton>
-    {/* <DropdownMenu modal>
+    <DropdownMenu modal>
       <DropdownMenuTrigger asChild>
         <SidebarMenuAction
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground mr-0.5"
@@ -79,7 +79,7 @@ const ThreadItem = ({
           <span>Delete</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu> */}
+    </DropdownMenu>
   </SidebarMenuItem>
 );
 
@@ -127,20 +127,20 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteId) return;
-    const deletePromise = fetch(`/api/chat?id=${deleteId}`, { method: 'DELETE' });
+    const deletePromise = apiClient.delete('/agent/api/threads/', { 
+      data: { thread_id: deleteId } 
+    });
 
     toast.promise(deletePromise, {
       loading: 'Deleting thread...',
       success: () => {
-        // remove from local state
-        setThreads((h) => h.filter((c) => c.id !== deleteId));
-        // if we're viewing that thread, go home
-        if (deleteId === id) router.push('/');
-        return 'Chat deleted successfully';
+        // refresh the entire browser
+        window.location.reload();
+        return 'Thread deleted successfully';
       },
-      error: 'Failed to delete chat',
+      error: 'Failed to delete thread',
     });
 
     setShowDeleteDialog(false);
@@ -213,16 +213,21 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
       </SidebarGroup>
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="sm:max-w-[425px] bg-white">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-xl font-semibold text-gray-900">Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription className="text-sm text-gray-600 mt-2">
               This action cannot be undone. This will permanently delete your chat.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+          <AlertDialogFooter className="flex-row justify-center gap-3 sm:justify-center">
+            <AlertDialogCancel className="mt-0 bg-gray-100 hover:bg-gray-200 text-gray-900 border-0">Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDelete}
+              className="mt-0 bg-red-600 hover:bg-red-700 text-white border-0"
+            >
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
