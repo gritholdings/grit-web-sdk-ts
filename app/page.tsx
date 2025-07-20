@@ -14,8 +14,7 @@ import { AppSidebar } from "@/app/components/app-sidebar";
 import { Send } from "lucide-react";
 import { Chat } from "@/app/components/chat";
 import { type User } from '@/app/auth/user';
-
-import { apiClient, baseUrl } from '@/app/components/base/api-client';
+import { checkAuthentication } from '@/app/auth/check-authentication';
 
 // Configure Amplify once
 Amplify.configure(outputs);
@@ -41,24 +40,15 @@ const App: React.FC<AppProps> = () => {
   const [user, setUser] = useState<User>({id: '', email: ''});
 
   useEffect(() => {
-    const checkAuthentication = async (): Promise<void> => {
-      try {
-        const response = await apiClient.post('/auth/is-authenticated/', {});
-        
-        if (response.data.is_authenticated) {
-          setUser({id: response.data.user_id, email: response.data.email});
-        } else {
-          window.alert('Login expired. Please log in again.');
-          window.location.href = `${baseUrl}/auth/login`;
-        }
-      } catch (error) {
-        window.alert('Login required. Please log in again.');
-        window.location.href = `${baseUrl}/auth/login`;
+    const authenticate = async () => {
+      const userData = await checkAuthentication();
+      if (userData) {
+        setUser(userData);
       }
     };
 
-    checkAuthentication();
-  }, [baseUrl]);
+    authenticate();
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
