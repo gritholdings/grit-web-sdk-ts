@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { SidebarProvider } from "@/app/components/shadcn/ui/sidebar";
 import { AppSidebar } from "@/app/components/app-sidebar";
 import { Chat } from "@/app/components/chat";
-import { apiClient } from '@/app/components/base/api-client';
+import { apiClient, baseUrl } from '@/app/components/base/api-client';
 import { Message } from '@/app/components/base/chat-api';
 import { type User } from '@/app/auth/user';
 
@@ -13,6 +13,26 @@ export default function ThreadPage() {
   const { id } = useParams() as { id: string };
   const [user, setUser] = useState<User>({ id: '', email: '' });
   const [initialMessages, setInitialMessages] = useState<Message[] | null>(null);
+
+  useEffect(() => {
+    const checkAuthentication = async (): Promise<void> => {
+      try {
+        const response = await apiClient.post('/auth/is-authenticated/', {});
+        
+        if (response.data.is_authenticated) {
+          setUser({id: response.data.user_id, email: response.data.email});
+        } else {
+          window.alert('Login expired. Please log in again.');
+          window.location.href = `${baseUrl}/auth/login`;
+        }
+      } catch (error) {
+        window.alert('Login required. Please log in again.');
+        window.location.href = `${baseUrl}/auth/login`;
+      }
+    };
+
+    checkAuthentication();
+  }, []);
 
   useEffect(() => {
     async function loadMessages() {
