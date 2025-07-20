@@ -112,6 +112,8 @@ export function Chat({
       <div className="flex flex-col min-w-0 h-dvh bg-background w-full">
         <ChatHeader
           setSelectedModelOptions={setSelectedModelOptions}
+          messagesLength={messages.length}
+          threadId={threadIdRef.current}
         />
         <div
           ref={messagesContainerRef}

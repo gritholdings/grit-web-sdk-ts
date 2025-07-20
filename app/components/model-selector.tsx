@@ -16,10 +16,14 @@ import { ModelOptions } from './chat';
 
 export function ModelSelector({
   setSelectedModelOptions,
+  messagesLength,
+  threadId,
   className,
   ...buttonProps
 }: {
   setSelectedModelOptions: (options: ModelOptions) => void;
+  messagesLength: number;
+  threadId: string | null;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -44,15 +48,33 @@ export function ModelSelector({
         const fetchedModels = response.data.models;
         setModels(fetchedModels);
 
-        // If no model is yet selected (or you want to force selection),
-        // set the parent to the first model
-        if (fetchedModels.length > 0 && !selectedModelId) {
-          setSelectedModelId(fetchedModels[0].id);
+        // Check for model query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const modelFromQuery = urlParams.get('model');
+        
+        // Find the model from query parameter or use the first model
+        let modelToSelect = fetchedModels[0];
+        if (modelFromQuery) {
+          const foundModel = fetchedModels.find(m => m.id === modelFromQuery);
+          if (foundModel) {
+            modelToSelect = foundModel;
+          }
+        }
+
+        // If no model is yet selected, set the model
+        if (fetchedModels.length > 0 && !selectedModelId && modelToSelect) {
+          setSelectedModelId(modelToSelect.id);
           setSelectedModelOptions({
-            modelId: fetchedModels[0].id,
-            suggestedMessages: fetchedModels[0].suggested_messages,
-            overviewHtml: fetchedModels[0].overview_html
+            modelId: modelToSelect.id,
+            suggestedMessages: modelToSelect.suggested_messages,
+            overviewHtml: modelToSelect.overview_html
           });
+          
+          // Clean up the URL after reading the model parameter
+          if (modelFromQuery) {
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -85,12 +107,19 @@ export function ModelSelector({
               onSelect={() => {
                 setOpen(false);
                 startTransition(() => {
-                  setSelectedModelId(model.id);
-                  setSelectedModelOptions({
-                    modelId: model.id,
-                    suggestedMessages: model.suggested_messages,
-                    overviewHtml: model.overview_html
-                  });
+                  // If messages exist and we're selecting a different model, redirect to new chat
+                  if (messagesLength > 0 && model.id !== selectedModelId && threadId) {
+                    // Navigate to home with the selected model ID as a query parameter
+                    window.location.href = `/?model=${encodeURIComponent(model.id)}`;
+                  } else {
+                    // Otherwise, just update the model selection
+                    setSelectedModelId(model.id);
+                    setSelectedModelOptions({
+                      modelId: model.id,
+                      suggestedMessages: model.suggested_messages,
+                      overviewHtml: model.overview_html
+                    });
+                  }
                 });
               }}
               className="gap-4 flex flex-row justify-between items-center"

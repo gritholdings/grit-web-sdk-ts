@@ -15,9 +15,13 @@ import { useSidebar } from '@/app/components/shadcn/ui/sidebar';
 import { ModelOptions } from './chat';
 
 export function ChatHeader({
-    setSelectedModelOptions
+    setSelectedModelOptions,
+    messagesLength,
+    threadId
   }: {
     setSelectedModelOptions: Dispatch<SetStateAction<ModelOptions>>;
+    messagesLength: number;
+    threadId: string | null;
   }) {
   const router = useRouter();
   const { open } = useSidebar();
@@ -45,6 +49,8 @@ export function ChatHeader({
       )}
       <ModelSelector
         setSelectedModelOptions={setSelectedModelOptions}
+        messagesLength={messagesLength}
+        threadId={threadId}
         className="order-1 md:order-2"
       />
     </header>
