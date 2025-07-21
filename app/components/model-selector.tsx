@@ -55,7 +55,7 @@ export function ModelSelector({
         // Find the model from query parameter or use the first model
         let modelToSelect = fetchedModels[0];
         if (modelFromQuery) {
-          const foundModel = fetchedModels.find(m => m.id === modelFromQuery);
+          const foundModel = fetchedModels.find((m: any) => m.id === modelFromQuery);
           if (foundModel) {
             modelToSelect = foundModel;
           }
