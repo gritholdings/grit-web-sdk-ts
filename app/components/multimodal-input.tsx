@@ -135,6 +135,19 @@ export function MultimodalInput({
     chatId || '',
   ]);
 
+  const fetchThreadMessages = async (threadId: string) => {
+    try {
+      const response = await apiClient.post(`/agent/api/threads/`, {
+        thread_id: threadId,
+      });
+      if (response.status === 200 && response.data.messages) {
+        setMessages(response.data.messages);
+      }
+    } catch (error) {
+      console.error('Failed to fetch thread messages:', error);
+    }
+  };
+
   const uploadFile = async (file: File) => {
     let currentThreadId = await ensureThreadExists();
     const formData = new FormData();
@@ -142,7 +155,7 @@ export function MultimodalInput({
     formData.append('thread_id', currentThreadId);
 
     try {
-      const response = await apiClient.post(`/api/files/upload`, formData, {
+      const response = await apiClient.post(`/agent/api/files/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -198,13 +211,17 @@ export function MultimodalInput({
           ...currentAttachments,
           ...successfullyUploadedAttachments,
         ]);
+        
+        // Refresh messages to show the uploaded images
+        const currentThreadId = await ensureThreadExists();
+        await fetchThreadMessages(currentThreadId);
       } catch (error) {
         console.error('Error uploading files!', error);
       } finally {
         setUploadQueue([]);
       }
     },
-    [setAttachments]
+    [setAttachments, ensureThreadExists, fetchThreadMessages]
   );
 
   return (
@@ -246,14 +263,15 @@ export function MultimodalInput({
 
       <input
         type="file"
-        className="fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
+        className="file-upload-input-hidden fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
         ref={fileInputRef}
         multiple
         onChange={handleFileChange}
         tabIndex={-1}
       />
 
-      {(attachments.length > 0 || uploadQueue.length > 0) && (
+      {/* Do not use this since the browser re-render from ChatHeader */}
+      {/* {(attachments.length > 0 || uploadQueue.length > 0) && (
         <div className="flex flex-row gap-2 overflow-x-scroll items-end">
           {attachments.map((attachment, index) => (
             <PreviewAttachment key={`${attachment.name}-${index}`} attachment={attachment} />
@@ -271,7 +289,7 @@ export function MultimodalInput({
             />
           ))}
         </div>
-      )}
+      )} */}
 
       <Textarea
         ref={textareaRef}
@@ -311,7 +329,7 @@ export function MultimodalInput({
         </Button>
       ) : (
         <Button
-          className="bg-black rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5 border"
+          className="send-button bg-black rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5 border"
           onClick={(event) => {
             event.preventDefault();
             submitForm();
@@ -323,7 +341,7 @@ export function MultimodalInput({
       )}
 
       <Button
-        className="rounded-full p-1.5 h-fit absolute bottom-2 right-11 m-0.5"
+        className="file-upload-button rounded-full p-1.5 h-fit absolute bottom-2 right-11 m-0.5"
         onClick={(event) => {
           event.preventDefault();
           fileInputRef.current?.click();
