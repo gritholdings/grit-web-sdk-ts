@@ -42,7 +42,9 @@ export function MultimodalInput({
   handleSubmit,
   className,
   suggestedMessages,
-  ensureThreadExists
+  ensureThreadExists,
+  onFileUploadStart,
+  onFileUploadEnd
 }: {
   chatId: string;
   input: string;
@@ -66,6 +68,8 @@ export function MultimodalInput({
   className?: string;
   suggestedMessages: Array<string>;
   ensureThreadExists: () => Promise<string>;
+  onFileUploadStart?: () => void;
+  onFileUploadEnd?: () => void;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
@@ -200,6 +204,7 @@ export function MultimodalInput({
       }
 
       setUploadQueue(files.map((file) => file.name));
+      onFileUploadStart?.();
 
       try {
         const uploadPromises = files.map((file) => uploadFile(file));
@@ -219,9 +224,10 @@ export function MultimodalInput({
         console.error('Error uploading files!', error);
       } finally {
         setUploadQueue([]);
+        onFileUploadEnd?.();
       }
     },
-    [setAttachments, ensureThreadExists, fetchThreadMessages]
+    [setAttachments, ensureThreadExists, fetchThreadMessages, onFileUploadStart, onFileUploadEnd]
   );
 
   return (

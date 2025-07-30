@@ -41,20 +41,26 @@ export const PreviewMessage = ({
     >
       <div
         className={cx(
-          'group-data-[role=user]/message:bg-primary group-data-[role=user]/message:text-primary-foreground flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl'
+          'group-data-[role=user]/message:bg-neutral-100 group-data-[role=user]/message:text-primary-foreground flex gap-4 group-data-[role=user]/message:px-4 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-[70%] group-data-[role=user]/message:py-3 rounded-xl'
         )}
       >
-        {message.role === 'assistant' && (
-          <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border">
-            <SparklesIcon size={14} />
-          </div>
-        )}
 
         <div className="flex flex-col gap-2 w-full">
           {message.content && (
             <div className="flex flex-col gap-4">
-              {message.content.startsWith('data:image') ? (
-                <div className="ml-auto inline-block border border-dashed border-slate-300 text-center rounded-md px-12 py-4">
+              {/* Check if it's a file upload message */}
+              {message.role === 'user_image' ? (
+                <div className="ml-auto inline-block border border-dashed border-slate-300 
+          text-left rounded-md px-12 py-4">
+                  <div>{message.metadata?.filename || 'File'}</div>
+                  {message.metadata?.pageCount && (
+                    <div className="text-xs text-gray-500 mt-1">{message.metadata.pageCount}</div>
+                  )}
+                </div>
+              ) : message.content.startsWith('data:image') ? (
+                /* Backward compatibility for old format */
+                <div className="ml-auto inline-block border border-dashed border-slate-300 
+          text-left rounded-md px-12 py-4">
                   File
                 </div>
               ) : (
@@ -170,10 +176,6 @@ export const ThinkingMessage = () => {
           }
         )}
       >
-        <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border">
-          <SparklesIcon size={14} />
-        </div>
-
         <div className="flex flex-col gap-2 w-full">
           <div className="flex flex-col gap-4 text-muted-foreground">
             Thinking...

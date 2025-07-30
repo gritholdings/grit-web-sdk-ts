@@ -70,7 +70,7 @@ const ThreadItem = ({
           <span className="sr-only">More</span>
         </SidebarMenuAction>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="bottom" align="end">
+      <DropdownMenuContent side="bottom" align="end" className="bg-white">
         <DropdownMenuItem
           className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive"
           onSelect={() => onDelete(thread.id)}

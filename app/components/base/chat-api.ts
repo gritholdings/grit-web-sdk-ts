@@ -14,18 +14,30 @@ interface Attachment {
 interface Message {
   id: string;
   content: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'user_image';
   createdAt?: Date;
   attachments?: Attachment[];
   experimental_attachments?: Attachment[];
+  metadata?: {
+    filename?: string;
+    totalPages?: number;
+    pageCount?: string;
+    [key: string]: any;
+  };
 }
 
 interface CreateMessage {
   id?: string;
   content: string;
-  role?: 'user' | 'assistant';
+  role?: 'user' | 'assistant' | 'user_image';
   createdAt?: Date;
   attachments?: Attachment[];
+  metadata?: {
+    filename?: string;
+    totalPages?: number;
+    pageCount?: string;
+    [key: string]: any;
+  };
 }
 
 interface ChatRequestOptions {
