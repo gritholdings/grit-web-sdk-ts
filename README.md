@@ -1,10 +1,14 @@
 # Grit Web SDK for TypeScript
 
-A TypeScript SDK for integrating with the Grit platform, providing seamless access to AI agent capabilities and chat functionality.
+## Deprecated
 
-**Preview**: https://platform.meetgrit.com/
+This repository is deprecated. The Grit Web SDK has been merged into the main repository at [Grit One SDK](https://github.com/gritholdings/grit-one-sdk-python).
+
+Please update your dependencies and refer to the consolidated repository for all documentation, updates, and support.
 
 ## Overview
+
+A TypeScript SDK for integrating with the Grit platform, providing seamless access to AI agent capabilities and chat functionality.
 
 The Grit Web SDK for TypeScript enables developers to integrate Grit's AI agent platform into their web applications. Built with Next.js and AWS Amplify, it provides a robust foundation for creating conversational AI experiences.
 
